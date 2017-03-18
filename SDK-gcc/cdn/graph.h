@@ -11,8 +11,8 @@ using namespace  std;
 
 #define maxn 1000
 #define INF 100000000
-#define maxpath 1000
-#define maxserver 100
+#define MAXPATH 1000
+#define MAXSERVER 100
 
 struct Edge
 {
