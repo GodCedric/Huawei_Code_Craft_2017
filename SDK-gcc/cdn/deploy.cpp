@@ -24,15 +24,26 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         f += graph.consumers[i].flowNeed;
     }
 
+    vector<int> servers2;
+    servers2.push_back(43);
+    servers2.push_back(22);
+    servers2.push_back(7);
+    servers2.push_back(37);
+    servers2.push_back(13);
+    servers2.push_back(15);
+    servers2.push_back(38);
+
     // 最小费用最大流求解
     MCF mincostflow;
     mincostflow.createMCF(graph);
-    vector<int> minCostPath[1000];   //路径
-    int m = 1000;
+    vector<int> minCostPath[MAXPATH];   //路径
+    int m = MAXPATH;
     int flowAll = 0;
     int minCost = 0;
     ostringstream ss;
-    int res = mincostflow.multiMinCostFlow(servers,consumerNetNodes,f,minCostPath,m,flowAll,minCost);
+    int res = mincostflow.multiMinCostFlow(servers2,consumerNetNodes,f,minCostPath,m,flowAll,minCost);
+    int cost = res+graph.serverCost*servers2.size();
+    cout<<cost<<endl;
     if(res >= 0){
         // 文件写入
         ss<<m<<"\n"<<"\n";
@@ -45,6 +56,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                     ss<<" ";
             }
         }
+        ss<<"\n"<<cost<<"\n";
     }else{
         ss<<"NA"<<"\n";     //无解输出NA
     }
