@@ -10,40 +10,40 @@ using namespace std;
 //你要完成的功能总入口
 void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 {
+    //全局结果
+    vector<int> servers;                //服务器位置
+    int minCost;                        //当前最小费用
+    vector<int> minCostPath[MAXPATH];   //路径
+    int m = MAXPATH;                    //路径数目（初始设为最大值）
+
     // 创建图
     Graph graph;
     graph.createGraph(topo);
 
-    // 初始最差解：每个消费节点相连的网络节点放置服务器
-    vector<int> servers;  //服务器
-    vector<int> consumerNetNodes;  //消费节点所连网络节点
-    int f = 0;   //流量需求
-    for(int i=0;i<graph.consumerNum;i++){
-        servers.push_back(graph.consumers[i].netNode);
-        consumerNetNodes.push_back(graph.consumers[i].netNode);
-        f += graph.consumers[i].flowNeed;
-    }
+    //初始最差解：每个消费节点相连的网络节点放个服务器
 
+
+    //测试用例
     vector<int> servers2;
-    servers2.push_back(43);
-    servers2.push_back(22);
-    servers2.push_back(7);
-    servers2.push_back(37);
+    servers2.push_back(0);
+    servers2.push_back(1);
+    servers2.push_back(24);
+    /*servers2.push_back(37);
     servers2.push_back(13);
     servers2.push_back(15);
-    servers2.push_back(38);
+    servers2.push_back(38);*/
+
 
     // 最小费用最大流求解
+    int res;            //最小费用结果
+    int cost;           //最小费用
     MCF mincostflow;
     mincostflow.createMCF(graph);
-    vector<int> minCostPath[MAXPATH];   //路径
-    int m = MAXPATH;
-    int flowAll = 0;
-    int minCost = 0;
-    ostringstream ss;
-    int res = mincostflow.multiMinCostFlow(servers2,consumerNetNodes,f,minCostPath,m,flowAll,minCost);
-    int cost = res+graph.serverCost*servers2.size();
+    res = mincostflow.multiMinCostFlow(servers2,minCostPath,m);
+    cost = res+graph.serverCost*servers2.size();
     cout<<cost<<endl;
+
+    ostringstream ss;
     if(res >= 0){
         // 文件写入
         ss<<m<<"\n"<<"\n";
