@@ -3,11 +3,11 @@
 #ifndef __MINCOSTFLOW__H__
 #define __MINCOSTFLOW__H__
 
-#include <iostream>
-#include <vector>
-#include <queue>
+//#include <iostream>
+//#include <vector>
+//#include <queue>
 #include <stack>
-#include <algorithm>
+//#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include "graph.h"

@@ -1,15 +1,22 @@
 #include "deploy.h"
-#include <stdio.h>
-#include <iostream>
-#include <sstream>
+//#include <stdio.h>
+//#include <iostream>
+//#include <sstream>
+
+#include "gettime.h"
 #include "graph.h"
 #include "mincostflow.h"
+#include "xjbs.h"
 
 using namespace std;
 
 //你要完成的功能总入口
 void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 {
+    //程序计时
+    double timelimit;
+    timelimit = gettime();
+
     //全局结果
     vector<int> servers;                //服务器位置
     int minCost;                        //当前最小费用
@@ -21,53 +28,67 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     graph.createGraph(topo);
 
     //初始最差解：每个消费节点相连的网络节点放个服务器
-
+    ostringstream stream;
+    stream<<graph.consumerNum<<"\n"<<"\n";
+    for(int i=0;i<graph.consumerNum;i++){
+        stream<<graph.consumers[i].netNode<<" "<<i<<" "<<graph.consumers[i].flowNeed<<"\n";
+    }
+    minCost = graph.consumerNum*graph.serverCost;       //以最差解费用初始化最小费用
+    cout<<minCost<<endl;
 
     //测试用例
     vector<int> servers2;
     servers2.push_back(0);
     servers2.push_back(1);
     servers2.push_back(24);
-    /*servers2.push_back(37);
-    servers2.push_back(13);
-    servers2.push_back(15);
-    servers2.push_back(38);*/
+    servers2.push_back(3);
+    //servers2.push_back(13);
+    //servers2.push_back(15);
+    //servers2.push_back(38);
 
 
-    // 最小费用最大流求解
+    //创建最小费用最大流模型
     int res;            //最小费用结果
     int cost;           //最小费用
     MCF mincostflow;
     mincostflow.createMCF(graph);
-    res = mincostflow.multiMinCostFlow(servers2,minCostPath,m);
-    cost = res+graph.serverCost*servers2.size();
-    cout<<cost<<endl;
 
-    ostringstream ss;
-    if(res >= 0){
-        // 文件写入
-        ss<<m<<"\n"<<"\n";
-        for(int i=0;i<m;i++){
-            for(int j=0;j<minCostPath[i].size();j++){
-                ss<<minCostPath[i][j];
-                if(j == minCostPath[i].size()-1)
-                    ss<<"\n";
-                else
-                    ss<<" ";
-            }
+    //搜索最优解
+    bool flag = true;   //是否退出迭代标志
+    int xx = 2;
+    while(xx--){
+        //迭代计时
+        timelimit = gettime();
+        cout<<"timelimit: "<<timelimit<<endl;
+
+        if(xx == 0){
+            servers2.pop_back();
         }
-        ss<<"\n"<<cost<<"\n";
-    }else{
-        ss<<"NA"<<"\n";     //无解输出NA
+        res = mincostflow.multiMinCostFlow(servers2,minCostPath,m);
+        cost = res+graph.serverCost*servers2.size();
+        cout<<cost<<endl;
+        //判断该解费用是否小于当前最小费用，如果是则写入当前解
+        if(res>0 && cost<minCost){
+            minCost = cost;
+            stream.clear();
+            stream.str("");
+            stream<<m<<"\n"<<"\n";
+            for(int i=0;i<m;i++){
+                for(int j=0;j<minCostPath[i].size();j++){
+                    stream<<minCostPath[i][j];
+                    if(j == minCostPath[i].size()-1)
+                        stream<<"\n";
+                    else
+                        stream<<" ";
+                }
+            }
+            stream<<"\n"<<cost<<"\n";
+        }
     }
-    string result = ss.str();
+
+    string result = stream.str();
     //cout<<result<<endl;
     const char* topo_file = result.c_str();
-
-
-
-	// 需要输出的内容
-	//char * topo_file = (char *)"17\n\n0 8 0 20\n21 8 0 20\n9 11 1 13\n21 22 2 20\n23 22 2 8\n1 3 3 11\n24 3 3 17\n27 3 3 26\n24 3 3 10\n18 17 4 11\n1 19 5 26\n1 16 6 15\n15 13 7 13\n4 5 8 18\n2 25 9 15\n0 7 10 10\n23 24 11 23";
 
 	// 直接调用输出文件的方法输出到指定文件中(ps请注意格式的正确性，如果有解，第一行只有一个数据；第二行为空；第三行开始才是具体的数据，数据之间用一个空格分隔开)
 	write_result(topo_file, filename);
