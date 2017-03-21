@@ -9,6 +9,8 @@ CMakeFiles/cdn.dir/cdn.cpp.o
 CMakeFiles/cdn.dir/deploy.cpp.o
  /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.cpp
  /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
+ /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
+ /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/gettime.h
  /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/graph.h
  /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib/lib_io.h
  /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/mincostflow.h

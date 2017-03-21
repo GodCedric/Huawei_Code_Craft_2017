@@ -15,7 +15,7 @@ using namespace  std;
 //全局变量
 #define MAXN 1000			//最大网络节点数
 //#define MAXEDGE 20          //每个节点链路数量上限
-#define INF 100000000		//数值上限
+#define INF 100000	    	//数值上限
 #define MAXPATH 50000		//网络路径上限
 #define MAXPATHNODE 1000	//单条路径节点数上限
 //#define MAXSERVER 100

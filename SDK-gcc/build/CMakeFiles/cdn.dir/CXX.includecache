@@ -19,20 +19,24 @@ stdio.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.cpp
 deploy.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
-stdio.h
--
-iostream
--
-sstream
--
+gettime.h
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/gettime.h
 graph.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/graph.h
 mincostflow.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/mincostflow.h
+geneticalgorithm.h
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
 lib_io.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib_io.h
+
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
+
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/gettime.h
+sys/timeb.h
+-
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/graph.h
 iostream
@@ -73,15 +77,7 @@ signal.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib/lib_time.h
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/mincostflow.h
-iostream
--
-vector
--
-queue
--
 stack
--
-algorithm
 -
 cstdio
 -

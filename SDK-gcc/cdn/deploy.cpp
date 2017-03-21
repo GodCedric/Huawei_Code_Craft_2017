@@ -22,6 +22,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int minCost;                        //当前最小费用
     vector<int> minCostPath[MAXPATH];   //路径
     int m = MAXPATH;                    //路径数目（初始设为最大值）
+    string result;
 
     // 创建图
     Graph graph;
@@ -34,6 +35,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         stream<<graph.consumers[i].netNode<<" "<<i<<" "<<graph.consumers[i].flowNeed<<"\n";
     }
     minCost = graph.consumerNum*graph.serverCost;       //以最差解费用初始化最小费用
+    result = stream.str();
     //cout<<minCost<<endl;
 
     //测试用例
@@ -57,18 +59,22 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //GA参数
     int generation = 10000;                     //设置迭代次数
     int geneBit = graph.nodeNum;                //基因编码位数
-    int maxServers = graph.consumerNum;           //服务器最大配置数目
+    int maxServers = graph.consumerNum;         //服务器最大配置数目
+    int chormNum = 100;                         //种群内染色体数量,先定个100条吧
+    const double crossoverRate = 0.7;                 //交叉概率
+    const double mulationRate = 0.1;                  //突变概率
+
+    //GA成员
+    vector<Chorm> population(100);              //种群
+    vector<Chorm> new_population(100);          //更新的种群
+    srand((unsigned)time(NULL));                //随机数种子
+    vector<pair<int,int> > fitAll(100,{0,0});          //适应度,first为适应度，second为对应坐标
 
 
     //初始化种群
-    int chormNum = 100;                         //种群内染色体数量,先定个100条吧
-    vector<Chorm> population(100);                   //种群
-    srand((unsigned)time(NULL));                //随机数种子
-    vector<int> fitAll(100,-1);                 //适应度
-
+    initChorm(chormNum, geneBit, population, maxServers);
 
     //GA迭代
-    string result;
     while(generation--){
 
         //接近90s时停止迭代
@@ -76,35 +82,23 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         if(timelimit > 85)
             break;
 
-        // 随机部署服务器
-        for(int i=0;i<chormNum;i++){
-            //服务器清空置零
-            for(int m=0;m<geneBit;m++){
-                population[i].gene[m] = false;
-            }
-
-            int numservers = rand() % maxServers;   //随机生成服务器数量，最多maxServers个
-            //随机分布服务器
-            for(int j=0;j<numservers;j++){
-                int index = rand() % geneBit;
-                population[i].gene[index] = true;
-            }
-            /*for(int m=0;m<geneBit;m++){
-                cout<<population[i].gene[m];
-            }
-            cout<<endl;*/
-        }
-
         //以最小费用流算法为适度函数，求各染色体适应度
         fitness(population, mincostflow, geneBit, fitAll);
+
+        //染色体选择
+        int cntValidChorm = 0;
+        chormSelection(population, new_population, fitAll, cntValidChorm);
+
+        //交叉
+
 
         //先来个xjbs
         int Minindex = -1;
         int temp = INF;
         for(int i=0;i<100;i++){
-            if(fitAll[i]>0 && fitAll[i]<temp){
+            if(fitAll[i].first>0 && fitAll[i].first<temp){
                 Minindex = i;
-                temp = fitAll[i];
+                temp = fitAll[i].first;
             }
         }
         decode(population[Minindex], geneBit, servers);
@@ -113,9 +107,9 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         //for(int i=0;i<minCostPath[0].size();i++)
             //cout<<minCostPath[0][i]<<" ";
         //cout<<endl;
-        cost = res+graph.serverCost*servers.size();
         //cout<<temp<<"  "<<res<<endl;
-        if(res>0 && cost<minCost){
+        if(res!=INF && cost<minCost){
+            cost = res+graph.serverCost*servers.size();
             minCost = cost;
             stream.clear();
             stream.str("");
@@ -133,7 +127,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             result = stream.str();
             //cout<<result<<endl;
         }
-        //轮盘赌选择
+        break;
 
     }
 

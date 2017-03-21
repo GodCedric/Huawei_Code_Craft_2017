@@ -146,9 +146,9 @@ public:
                  }
              }
 
-             //判断是否存在最短路径，若否，返回-1
+             //判断是否存在最短路径，若否，返回最大值
              if (dist[superConsumerNetNode] == INF){
-                 return -1;
+                 return INF;
              }
 
              //求取最短路径最小流量增加量
