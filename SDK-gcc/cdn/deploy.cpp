@@ -7,6 +7,7 @@
 #include "graph.h"
 #include "mincostflow.h"
 #include "geneticalgorithm.h"
+#include "analyzegraph.h"
 
 using namespace std;
 
@@ -28,26 +29,9 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     Graph graph;
     graph.createGraph(topo);
 
-    //初始最差解：每个消费节点相连的网络节点放个服务器
-    ostringstream stream;
-    stream<<graph.consumerNum<<"\n"<<"\n";
-    for(int i=0;i<graph.consumerNum;i++){
-        stream<<graph.consumers[i].netNode<<" "<<i<<" "<<graph.consumers[i].flowNeed<<"\n";
-    }
-    minCost = graph.consumerNum*graph.serverCost;       //以最差解费用初始化最小费用
-    result = stream.str();
-    //cout<<minCost<<endl;
-
-    //测试用例
-    /*vector<int> servers2;
-    servers2.push_back(0);
-    servers2.push_back(1);
-    servers2.push_back(24);
-    servers2.push_back(3);*/
-    //servers2.push_back(13);
-    //servers2.push_back(15);
-    //servers2.push_back(38);
-
+    //图分析，得到网络节点优先概率
+    vector<double> probability(graph.nodeNum,0);
+    analyzegraph(graph, probability);
 
     //创建最小费用最大流模型
     int res;            //最小费用结果
@@ -61,18 +45,33 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int geneBit = graph.nodeNum;                //基因编码位数
     int maxServers = graph.consumerNum;         //服务器最大配置数目
     int chormNum = 100;                         //种群内染色体数量,先定个100条吧
-    const double crossoverRate = 0.7;                 //交叉概率
+    const double crossoverRate = 0.8;                 //交叉概率
     const double mulationRate = 0.1;                  //突变概率
 
     //GA成员
     vector<Chorm> population(100);              //种群
-    vector<Chorm> new_population(100);          //更新的种群
     srand((unsigned)time(NULL));                //随机数种子
     vector<pair<int,int> > fitAll(100,{0,0});          //适应度,first为适应度，second为对应坐标
 
+    //初始最差解：每个消费节点相连的网络节点放个服务器
+    ostringstream stream;
+    stream<<graph.consumerNum<<"\n"<<"\n";
+    for(int i=0;i<graph.consumerNum;i++){
+        stream<<graph.consumers[i].netNode<<" "<<i<<" "<<graph.consumers[i].flowNeed<<"\n";
+        population[0].gene[graph.consumers[i].netNode] = true;  //把最差解先放进去
+    }
+    minCost = graph.consumerNum*graph.serverCost;       //以最差解费用初始化最小费用
+    result = stream.str();
+    //cout<<minCost<<endl;
+    //cout<<endl;
+    int tempMinCost = minCost;
+    int cntMinCost = 0;
+    //cout<<minCost<<endl;
 
     //初始化种群
-    initChorm(chormNum, geneBit, population, maxServers);
+    for(int i=1;i<chormNum;i++){
+        generateChorm(population[i], probability, chormNum, geneBit, maxServers);
+    }
 
     //GA迭代
     while(generation--){
@@ -82,52 +81,68 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         if(timelimit > 85)
             break;
 
+        //initChorm(probability, population, chormNum, geneBit, maxServers);
+
         //以最小费用流算法为适度函数，求各染色体适应度
-        fitness(population, mincostflow, geneBit, fitAll);
+        fitness(population, mincostflow, geneBit, graph.serverCost, fitAll);
+        /*for(int i=0;i<chormNum;i++){
+            for(int j=0;j<geneBit;j++){
+                cout<<population[i].gene[j];
+            }
+            cout<<" "<<population[i].fit;
+            cout<<endl;
+        }
+        return;*/
+
 
         //染色体选择
         int cntValidChorm = 0;
+        vector<Chorm> new_population(100);          //更新的种群
         chormSelection(population, new_population, fitAll, cntValidChorm);
 
-        //交叉
-
-
-        //先来个xjbs
-        int Minindex = -1;
-        int temp = INF;
-        for(int i=0;i<100;i++){
-            if(fitAll[i].first>0 && fitAll[i].first<temp){
-                Minindex = i;
-                temp = fitAll[i].first;
-            }
-        }
-        decode(population[Minindex], geneBit, servers);
-        res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
-        //cout<<m<<endl;
-        //for(int i=0;i<minCostPath[0].size();i++)
-            //cout<<minCostPath[0][i]<<" ";
-        //cout<<endl;
-        //cout<<temp<<"  "<<res<<endl;
-        if(res!=INF && cost<minCost){
+        //更新当前最优解
+        if(fitAll[0].first < minCost){
+            //cout<<"Hello!"<<"  "<<minCost<<endl;
+            decode(population[fitAll[0].second], geneBit, servers);
+            res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
             cost = res+graph.serverCost*servers.size();
-            minCost = cost;
-            stream.clear();
-            stream.str("");
-            stream<<m<<"\n"<<"\n";
-            for(int i=0;i<m;i++){
-                for(int j=0;j<minCostPath[i].size();j++){
-                    stream<<minCostPath[i][j];
-                    if(j == minCostPath[i].size()-1)
-                        stream<<"\n";
-                    else
-                        stream<<" ";
+            if(res!=INF && cost<minCost){
+                stream.clear();
+                stream.str("");
+                stream<<m<<"\n"<<"\n";
+                for(int i=0;i<m;i++){
+                    for(int j=0;j<minCostPath[i].size();j++){
+                        stream<<minCostPath[i][j];
+                        if(j == minCostPath[i].size()-1)
+                            stream<<"\n";
+                        else
+                            stream<<" ";
+                    }
                 }
+                //stream<<"\n"<<cost<<"\n";
+                result = stream.str();
+                //cout<<result<<endl;
             }
-            //stream<<"\n"<<cost<<"\n";
-            result = stream.str();
-            //cout<<result<<endl;
+            minCost = cost;
         }
-        break;
+
+        //交叉
+        crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers);
+
+        //变异
+
+        //收敛后退出
+        //cout<<cntMinCost<<endl;
+        if(cntValidChorm>70 && tempMinCost==minCost){
+            cntMinCost++;
+        }else{
+            cntMinCost = 0;
+        }
+        if(cntValidChorm>70 && cntMinCost>500){//如果1000次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
+            break;
+        }
+        tempMinCost = minCost;
+        //break;
 
     }
 
