@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/analyzegraph.h
+
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/cdn.cpp
 deploy.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
@@ -27,12 +29,18 @@ mincostflow.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/mincostflow.h
 geneticalgorithm.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
+analyzegraph.h
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/analyzegraph.h
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
 lib_io.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib_io.h
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
+set
+-
+algorithm
+-
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/gettime.h
 sys/timeb.h

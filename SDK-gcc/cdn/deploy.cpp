@@ -130,6 +130,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers);
 
         //变异
+        mutation(mulationRate, population, chormNum, geneBit);
 
         //收敛后退出
         //cout<<cntMinCost<<endl;
@@ -138,7 +139,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         }else{
             cntMinCost = 0;
         }
-        if(cntValidChorm>70 && cntMinCost>500){//如果1000次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
+        if(cntValidChorm>70 && cntMinCost>1000){//如果1000次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
             break;
         }
         tempMinCost = minCost;

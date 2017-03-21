@@ -6,6 +6,7 @@ CMakeFiles/cdn.dir/cdn.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SD
 CMakeFiles/cdn.dir/cdn.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib/lib_io.h
 CMakeFiles/cdn.dir/cdn.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib/lib_time.h
 
+CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/analyzegraph.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.cpp
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
