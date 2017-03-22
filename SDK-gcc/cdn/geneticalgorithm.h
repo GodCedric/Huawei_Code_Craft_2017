@@ -88,13 +88,11 @@ void initChorm(vector<double>& probability, vector<Chorm>& population, int chorm
 
 // 求各染色体的适应度
 void fitness(vector<Chorm>& population, MCF& mincostflow, int nodeNum, int serverCost, vector<pair<int,int> >& fitAll){
-    vector<int> minCostPath[MAXPATH];   //路径
-    int m = MAXPATH;                    //路径数目（初始设为最大值）
     vector<int> servers;                //服务器位置
     int fit;                            //适应度
     for(int i=0;i<population.size();i++){
         decode(population[i], nodeNum, servers);//获取服务器部署
-        fit = mincostflow.multiMinCostFlow(servers,minCostPath,m);
+        fit = mincostflow.multiMinCostFlow2(servers);
         fit += serverCost*servers.size();
         fitAll[i].first = fit;                  //存储适应度
         fitAll[i].second = i;                   //存储对应染色体坐标
@@ -122,7 +120,11 @@ void crossover(const double crossoverRate,
                int& cntValidChorm, vector<double>& probability,
                int chormNum, int geneBit, int maxServers){
 
-    //交叉位数，有20%的染色体基因发生交叉
+    int m = 6;  //保护几条染色体
+    int n = 15;  //有几条交叉感染的染色体
+    int x = 20;  //留出10条染色体的位置随机生成，保证种群多样性
+
+    //交叉位数，有10%的染色体基因发生交叉
     const int bitcnt = geneBit / 10;
 
     //不满足10个解的继续寻找，满足的解保留，不满足的更新
@@ -131,18 +133,18 @@ void crossover(const double crossoverRate,
             generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
         }
     }else{//已经存在10个有效解了
-        //前5个最小有效解两两交叉获得10个新的有效解,放在尾部
+        //前10个最小有效解两两交叉获得10个新的有效解,放在尾部
         int cnt = 0;
-        for(int i=0;i<5;i++){
-            for(int j=i+1;j<5;j++){
+        for(int i=0;i<m;i++){
+            for(int j=i+1;j<m;j++){
                 cnt++;
-                int a = chormNum-20-cnt;
+                int a = chormNum-x-cnt;
                 new_population[a] = population[i];
                 cnt++;
-                int b = chormNum-20-cnt;
+                int b = chormNum-x-cnt;
                 new_population[b] = population[j];
                 //交叉，随机生成交叉起始点
-                int start = rand() / (chormNum-bitcnt - 1) + 1;
+                int start = rand() / (chormNum-bitcnt);
                 //开始交叉
                 for(int m=start;m<bitcnt;m++){
                     swap(new_population[a].gene[m],new_population[b].gene[m]);
@@ -150,12 +152,12 @@ void crossover(const double crossoverRate,
             }
         }
         //第6个开始的有效染色体两两按交叉概率交叉
-        for(int i=5;i<cntValidChorm-1;){
+        for(int i=m;i<cntValidChorm-1;){
 
             double rate = rand() % 1000 / 1000.0;
             if(rate < crossoverRate){
                 //交叉，随机生成交叉起始点
-                int start = rand() % (geneBit-bitcnt - 1) + 1;
+                int start = rand() % (geneBit-bitcnt);
                 //开始交叉
                 for(int m=start;m<bitcnt;m++){
                     swap(new_population[i].gene[m],new_population[i+1].gene[m]);
@@ -165,7 +167,7 @@ void crossover(const double crossoverRate,
             i += 2;
         }
         //剩下的无解的染色体仍然按照随机生成，并且至少保证留出来20个染色体为随机生成，补充种群多样性
-        for(int i=((cntValidChorm<80)?cntValidChorm:80);i<chormNum;i++){
+        for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;i++){
             generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
         }
     }

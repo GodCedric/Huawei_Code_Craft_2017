@@ -22,9 +22,9 @@ using namespace  std;
 
 //边
 struct Edge{
-	int from, to, cap, flow, cost;   //起始，终止，容量，流量，单价
+	int from, to, cap, cost;   //起始，终止，流量，单价
 	Edge(){}
-	Edge(int u, int v, int c, int f,int w):from(u), to(v), cap(c), flow(f),cost(w){}
+	Edge(int u, int v, int c, int w):from(u), to(v), cap(c), cost(w){}
 };
 
 //消费节点

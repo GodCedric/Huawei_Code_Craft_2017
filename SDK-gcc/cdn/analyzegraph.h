@@ -7,9 +7,9 @@ void analyzegraph(const Graph& graph, vector<double>& probability){
     //与消费节点直接相连的加10分，间接相连的加5分
     for(int i=0;i<graph.consumerNum;i++){
         int netNode = graph.consumers[i].netNode;
-        priporityNode[netNode] += 20.0;
+        priporityNode[netNode] += 50.0;
         for(int j=0;j<graph.G[netNode].size();j++){
-            priporityNode[graph.G[netNode][j].to] += 10.0;
+            priporityNode[graph.G[netNode][j].to] += 30.0;
         }
     }
 

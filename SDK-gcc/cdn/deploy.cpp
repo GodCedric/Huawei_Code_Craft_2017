@@ -23,7 +23,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int minCost;                        //当前最小费用
     vector<int> minCostPath[MAXPATH];   //路径
     int m = MAXPATH;                    //路径数目（初始设为最大值）
-    string result;
+    string result;                      //文件输出结果
 
     // 创建图
     Graph graph;
@@ -45,8 +45,8 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int geneBit = graph.nodeNum;                //基因编码位数
     int maxServers = graph.consumerNum;         //服务器最大配置数目
     int chormNum = 100;                         //种群内染色体数量,先定个100条吧
-    const double crossoverRate = 0.8;                 //交叉概率
-    const double mulationRate = 0.1;                  //突变概率
+    const double crossoverRate = 0.7;                 //交叉概率
+    const double mulationRate = 0.15;                  //突变概率
 
     //GA成员
     vector<Chorm> population(100);              //种群
@@ -78,7 +78,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
         //接近90s时停止迭代
         timelimit = gettime();
-        if(timelimit > 85)
+        if(timelimit > 88)
             break;
 
         //initChorm(probability, population, chormNum, geneBit, maxServers);
@@ -134,12 +134,12 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
         //收敛后退出
         //cout<<cntMinCost<<endl;
-        if(cntValidChorm>70 && tempMinCost==minCost){
+        if(cntValidChorm>80 && tempMinCost==minCost){
             cntMinCost++;
         }else{
             cntMinCost = 0;
         }
-        if(cntValidChorm>70 && cntMinCost>1000){//如果1000次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
+        if(cntValidChorm>80 && cntMinCost>25){//如果50次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
             break;
         }
         tempMinCost = minCost;
@@ -147,6 +147,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     }
 
+   // cout<<10000 - generation<<endl;
 
     //string result = stream.str();
     //cout<<result<<endl;
