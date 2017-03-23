@@ -28,6 +28,9 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     // 创建图
     Graph graph;
     graph.createGraph(topo);
+    //cout<<graph.G.size()<<endl;
+    int nodeNum = graph.nodeNum;
+    int consumerNum = graph.consumerNum;
 
     //图分析，得到网络节点优先概率
     vector<double> probability(graph.nodeNum,0);
@@ -36,12 +39,12 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //创建最小费用最大流模型
     int res;            //最小费用结果
     int cost;           //最小费用
-    MCF mincostflow;
-    mincostflow.createMCF(graph);
+    MCF mincostflow(nodeNum,graph);
+    //mincostflow.createMCF(graph);
 
     //////////GA搜索最优解
     //GA参数
-    int generation = 10000;                     //设置迭代次数
+    int generation = 100000;                     //设置迭代次数
     int geneBit = graph.nodeNum;                //基因编码位数
     int maxServers = graph.consumerNum;         //服务器最大配置数目
     int chormNum = 100;                         //种群内染色体数量,先定个100条吧
@@ -58,9 +61,11 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     stream<<graph.consumerNum<<"\n"<<"\n";
     for(int i=0;i<graph.consumerNum;i++){
         stream<<graph.consumers[i].netNode<<" "<<i<<" "<<graph.consumers[i].flowNeed<<"\n";
+        //初始种群设置
         population[0].gene[graph.consumers[i].netNode] = true;  //把最差解先放进去
     }
     minCost = graph.consumerNum*graph.serverCost;       //以最差解费用初始化最小费用
+    int worstCost = minCost;
     result = stream.str();
     //cout<<minCost<<endl;
     //cout<<endl;
@@ -69,36 +74,48 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //cout<<minCost<<endl;
 
     //初始化种群
-    for(int i=1;i<chormNum;i++){
+    //从消费节点向内推一个节点
+    int initChormNum = 1;
+    /*for(int i=0;i<graph.consumerNum;i++){
+        int netNum = graph.consumers[i].netNode;
+        int nn = graph.G[netNum].size();
+        for(int j=0;j<nn;j++){
+            population[initChormNum] = population[0];
+            population[initChormNum].gene[netNum] = false;
+            population[initChormNum].gene[graph.G[netNum][j].to] = true;
+            initChormNum++;
+        }
+        if(initChormNum >= chormNum)
+            break;
+    }*/
+    //cout<<initChormNum<<endl;
+    for(int i=initChormNum;i<chormNum;i++){
         generateChorm(population[i], probability, chormNum, geneBit, maxServers);
     }
 
     //GA迭代
+    int cntChanged = 0;         //最小代价改变次数
+    int nProtect = 0;           //染色体保护数目
+    bool breakflag = false;
     while(generation--){
+        //cout<<generation<<endl;
 
         //接近90s时停止迭代
         timelimit = gettime();
         if(timelimit > 88)
             break;
 
-        //initChorm(probability, population, chormNum, geneBit, maxServers);
 
         //以最小费用流算法为适度函数，求各染色体适应度
-        fitness(population, mincostflow, geneBit, graph.serverCost, fitAll);
-        /*for(int i=0;i<chormNum;i++){
-            for(int j=0;j<geneBit;j++){
-                cout<<population[i].gene[j];
-            }
-            cout<<" "<<population[i].fit;
-            cout<<endl;
-        }
-        return;*/
-
+        fitness(population, mincostflow, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
+        //if(breakflag)
+            //break;
 
         //染色体选择
         int cntValidChorm = 0;
         vector<Chorm> new_population(100);          //更新的种群
         chormSelection(population, new_population, fitAll, cntValidChorm);
+
 
         //更新当前最优解
         if(fitAll[0].first < minCost){
@@ -121,33 +138,41 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                 }
                 //stream<<"\n"<<cost<<"\n";
                 result = stream.str();
+				//const char* topo_file = result.c_str();
+				//write_result(topo_file, filename);
                 //cout<<result<<endl;
             }
             minCost = cost;
+            cntChanged++;
+            cout<<minCost<<endl;
         }
+        //cout<<cntValidChorm<<endl;
 
         //交叉
-        crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers);
+        crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers, nProtect);
 
         //变异
         mutation(mulationRate, population, chormNum, geneBit);
 
         //收敛后退出
         //cout<<cntMinCost<<endl;
-        if(cntValidChorm>80 && tempMinCost==minCost){
+        if(cntValidChorm>80 && tempMinCost == minCost){
             cntMinCost++;
         }else{
             cntMinCost = 0;
         }
-        if(cntValidChorm>80 && cntMinCost>25){//如果50次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
+        if((cntChanged>15||cntValidChorm>80) && cntMinCost>50){//如果50次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
             break;
         }
+        if(cntMinCost > 600)
+            break;
         tempMinCost = minCost;
+        //cout<<minCost<<endl;
         //break;
 
     }
-
-   // cout<<10000 - generation<<endl;
+    //cout<<generation<<endl;
+    cout<<100000 - generation<<endl;
 
     //string result = stream.str();
     //cout<<result<<endl;
