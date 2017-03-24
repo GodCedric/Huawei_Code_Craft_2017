@@ -41,6 +41,14 @@ public:
 	int consumerNum;	//消费节点数
 	int serverCost;		//服务器单价
 
+	//spfa成员
+	bool inq[MAXN];                  //节点入队标志位
+    int dist[MAXN];                 //最短距离
+    int prevv[MAXN];                //最短路中的父结点
+    int preve[MAXN];                //最短路中的父边编号
+    int addflow[MAXN];              //可增加量
+    queue<int> q;                   //队列
+
 	//图成员
 	vector<Edge> G[MAXN];			//网络结点邻接表
 	//vector< vector<Edge> > G(1000);  //
@@ -87,6 +95,59 @@ public:
             ss>>consumer.no>>consumer.netNode>>consumer.flowNeed;
             netToConsumer[consumer.netNode]=consumer.no;
             consumers.push_back(consumer);
+        }
+    }
+
+    //spfa
+    void spfa(int start, int& index1, int& index2, int& index3){
+        fill(dist, dist+nodeNum, INF);//距离初始化为INF
+        fill(inq, inq+nodeNum, false);//入队标志初始化
+        dist[start] = 0;
+        addflow[start] = INF;
+        q.push(start);
+        inq[start] = true;
+        while (!q.empty())
+        {
+            int v = q.front();
+            q.pop();
+            inq[v] = false;
+            for (int i = 0; i<G[v].size(); i++)
+            {
+                Edge &e = G[v][i];
+                if (e.cap>0 && dist[e.to]>dist[v]+e.cost)//松弛操作
+                {
+                    dist[e.to] = dist[v] + e.cost;
+                    prevv[e.to] = v;//更新父结点
+                    preve[e.to] = i;//更新父边编号
+                    addflow[e.to] = min(addflow[v], e.cap);
+                    if(!inq[e.to]){
+                        q.push(e.to);
+                        inq[e.to] = true;
+                    }
+
+                }
+            }
+        }
+
+        index1 = 0;
+        index2 = 0;
+        index3 = 0;
+        int temp = 0;
+        int maxValue = 0;
+
+        //流量越大越好，费用越低越好
+        for(int i=0;i<nodeNum;i++){
+            if(i == start)
+                continue;
+            if(dist[i] < INF){
+                temp = dist[i]*128/addflow[i];
+                if(temp > maxValue){
+                    maxValue = temp;
+                    index3 = index2;
+                    index2 = index1;
+                    index1 = i;
+                }
+            }
         }
     }
 };

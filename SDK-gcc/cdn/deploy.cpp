@@ -29,19 +29,23 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     // 创建图
     Graph graph;
     graph.createGraph(topo);
+
     //cout<<graph.G.size()<<endl;
     int nodeNum = graph.nodeNum;
     int consumerNum = graph.consumerNum;
     int serverCost = graph.serverCost;
 
     //图分析，得到网络节点优先概率
+    bool excellentGene[MAXN];       //优秀基因
+    bool goodGene[MAXN];            //良好基因
+    bool mediumGene[MAXN];          //中等基因
     vector<double> probability(graph.nodeNum,0);
-    analyzegraph(graph, probability);
+    analyzegraph(graph, probability, excellentGene, goodGene, mediumGene);
 
     //创建最小费用最大流模型
     int res;            //最小费用结果
     int cost;           //最小费用
-    MCF mincostflow(nodeNum,graph);
+    MCF mincostflow(graph);
     //mincostflow.createMCF(graph);
 
     //////////GA搜索最优解
@@ -70,6 +74,8 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     }
     minCost = graph.consumerNum*graph.serverCost;       //以最差解费用初始化最小费用
     int worstCost = minCost;
+    cout<<worstCost<<endl;
+    cout<<endl;
     result = stream.str();
     //cout<<minCost<<endl;
     //cout<<endl;
@@ -78,9 +84,24 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //cout<<minCost<<endl;
 
     //初始化种群
-    //从消费节点向内推一个节点
-    int initChormNum = 1;
-    for(int i=0;i<graph.consumerNum;i++){
+    //将优良中基因与初始最差基因交配产生一批基因
+    int lengthGene = geneBit / 10;      //1/10的基因片段
+    int initChormNum = 16;
+    for(int i=0;i<initChormNum;i++){
+        int start = rand() % (geneBit - lengthGene);
+        population[i*3] = population[0];
+        population[i*3+1] = population[0];
+        population[i*3+2] = population[0];
+        for(int j=0;j<lengthGene;j++){
+            //优等基因交换
+            swap(population[i*3].gene[j],excellentGene[j]);
+            //良好基因交换
+            swap(population[i*3+1].gene[j],goodGene[j]);
+            //中等基因交换
+            swap(population[i*3+2].gene[j],mediumGene[j]);
+        }
+    }
+    /*for(int i=0;i<graph.consumerNum;i++){
         int netNum = graph.consumers[i].netNode;
         int nn = graph.G[netNum].size();
         for(int j=0;j<nn;j++){
@@ -91,9 +112,10 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         }
         if(initChormNum >= chormNum*2/3)
             break;
-    }
+    }*/
     //cout<<initChormNum<<endl;
-    for(int i=initChormNum;i<chormNum;i++){
+    //剩下的随机产生
+    for(int i=initChormNum*3+1;i<chormNum;i++){
         generateChorm(population[i], probability, chormNum, geneBit, maxServers);
     }
 
@@ -143,7 +165,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             }
             minCost = cost;
             cntChanged++;
-            cout<<minCost<<endl;
+            //cout<<minCost<<endl;
         }
         //cout<<cntValidChorm<<endl;
 
@@ -171,7 +193,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     }
     //cout<<generation<<endl;
-    cout<<10000 - generation<<endl;
+    //cout<<10000 - generation<<endl;
     //cout<<cntMCF<<endl;
 
     //string result = stream.str();
