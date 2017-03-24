@@ -94,14 +94,14 @@ void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int 
 }*/
 
 // 求各染色体的适应度
-/*void fitness(vector<Chorm>& population, MCF& mincostflow, vector<int>& servers,int nodeNum, int serverCost, vector<pair<int,int> >& fitAll, int nProtect,bool& breakflag){
+void fitness(vector<Chorm>& population, MCF& mincostflow, vector<int>& servers,int nodeNum, int serverCost, vector<pair<int,int> >& fitAll, int nProtect,bool& breakflag){
     //vector<int> servers;                //服务器位置
     int fit;                            //适应度
     //double timelimit;                   //程序计时
     for(int i=nProtect;i<population.size();i++){
         decode(population[i], nodeNum, servers);//获取服务器部署
-        fit = mincostflow.multiMinCostFlow2(servers);
-
+        int fit = mincostflow.multiMinCostFlow2(servers);
+        //cntMCF++;
         if(gettime() > 87.5){
             breakflag = true;
             break;
@@ -113,7 +113,7 @@ void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int 
         population[i].fit = fit;                //得到适应度
         //cout<<fit<<endl;
     }
-}*/
+}
 
 // 染色体选择
 void chormSelection(vector<Chorm>& population, vector<Chorm>& new_population, vector<pair<int,int> >& fitAll, int& cntValidChorm){
@@ -134,9 +134,9 @@ void crossover(double crossoverRate,
                int cntValidChorm, vector<double>& probability,
                int chormNum, int geneBit, int maxServers, int nProtect){
 
-    int m = 8;  //保护几条染色体
-    int n = 28;  //有几条交叉感染的染色体
-    int x = 0;  //留出10条染色体的位置随机生成，保证种群多样性
+    int m = 5;  //保护几条染色体
+    int n = 15;  //有几条交叉感染的染色体
+    int x = 20;  //留出10条染色体的位置随机生成，保证种群多样性
 
     //交叉位数，有10%的染色体基因发生交叉
     const int bitcnt = geneBit / 10;
@@ -190,10 +190,10 @@ void crossover(double crossoverRate,
             i += 2;
         }
         //剩下的无解的染色体仍然按照随机生成，并且至少保证留出来20个染色体为随机生成，补充种群多样性
-        /*for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;i++){
+        for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;i++){
             generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
             //randomChorm(new_population[i], chormNum, geneBit, maxServers);
-        }*/
+        }
     }
 
     // 更新种群

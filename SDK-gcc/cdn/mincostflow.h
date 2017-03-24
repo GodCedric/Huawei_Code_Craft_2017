@@ -29,6 +29,7 @@ class MCF{
 private:
     Graph graph;                    //关联图
     int nodeNum;                    //网络节点数目
+    int consumerNum;                //消费节点数目
 
     vector<Edge_MCF> G[MAXN];       //残存网络邻接表
     bool inq[MAXN];                  //节点入队标志位
@@ -36,19 +37,24 @@ private:
     int prevv[MAXN];                //最短路中的父结点
     int preve[MAXN];                //最短路中的父边编号
     int addflow[MAXN];              //可增加量
+    queue<int> q;                   //队列
 
     vector<int> consumerNetNodes;   //消费节点所连网络节点
     int f_all;                      //消费节点容量需求和
-    priority_queue<P, vector<P>, greater<P> >q;//队列
+    //priority_queue<P, vector<P>, greater<P> >q;//队列
+
 
 public:
     //构造函数
-    MCF(int n, Graph graph):nodeNum(n){
+    MCF(Graph graph){
+
+        nodeNum = graph.nodeNum;
+        consumerNum = graph.consumerNum;
 
         this->graph = graph;
 
         //按图创建残存网络
-        for (int i=0;i<n;i++)
+        for (int i=0;i<nodeNum;i++)
         {
             for(int j=0;j<graph.G[i].size();j++){
                 addEdge(graph.G[i][j].from,graph.G[i][j].to,
@@ -57,7 +63,7 @@ public:
         }
 
         //初始化consumerNetNodes,f
-        for(int i=0;i<graph.consumerNum;i++){
+        for(int i=0;i<consumerNum;i++){
             consumerNetNodes.push_back(graph.consumers[i].netNode);
             f_all += graph.consumers[i].flowNeed;
         }
@@ -83,20 +89,20 @@ public:
     //多源多汇最小费用流算法
     int multiMinCostFlow(vector<int> &servers,            //服务器位置
                           vector<int> minCostPath[],int &m){   //路径及路径数目
+         int serversNum = servers.size();
+
          //创建残量网络副本
-         //vector<Edge_MCF> G1[MAXN];
-         //copy(this->G,this->G+MAXN,G1);
          vector<Edge_MCF> G1[nodeNum+2];
          copy(this->G,this->G+nodeNum+2,G1);
 
          //加入超级源与超级汇
          int superServer = nodeNum;//超级源
-         for(int i=0;i<servers.size();i++){
+         for(int i=0;i<serversNum;i++){
              //超级源与每个服务器建立边：费用0，容量无穷
              addEdge(G1,superServer,servers[i],INF,0);
          }
          int superConsumerNetNode = nodeNum+1;//超级汇
-         for(int i=0;i<consumerNetNodes.size();i++){
+         for(int i=0;i<consumerNum;i++){
              //超级汇与每个消费结点所连的网络结点建立边：费用为流量需求，容量无穷
              addEdge(G1,consumerNetNodes[i],superConsumerNetNode,graph.consumers[i].flowNeed,0);
          }
@@ -120,13 +126,16 @@ public:
              fill(inq, inq+nodeNum+2, false);//入队标志初始化
              dist[superServer] = 0;
              addflow[superServer] = INF;
-             q.push(P(0, superServer));
+             //q.push(P(0, superServer));
+             q.push(superServer);
              inq[superServer] = true;
              while (!q.empty())
              {
-                 P p = q.top();
+                 //P p = q.top();
+                 //q.pop();
+                 //int v = p.second;
+                 int v = q.front();
                  q.pop();
-                 int v = p.second;
                  inq[v] = false;
                  for (int i = 0; i<G1[v].size(); i++)
                  {
@@ -138,7 +147,8 @@ public:
                          preve[e.to] = i;//更新父边编号
                          addflow[e.to] = min(addflow[v], e.cap);
                          if(!inq[e.to]){
-                            q.push(P(dist[e.to], e.to));
+                            //q.push(P(dist[e.to], e.to));
+                            q.push(e.to);
                             inq[e.to] = true;
                          }
 
@@ -204,20 +214,20 @@ public:
 
     //多源多汇最小费用流算法，用于求fit，即不需要求path
     int multiMinCostFlow2(vector<int> &servers){
+         int serversNum = servers.size();
+
          //创建残量网络副本
-         //vector<Edge_MCF> G1[MAXN];
-         //copy(this->G,this->G+MAXN,G1);
          vector<Edge_MCF> G1[nodeNum+2];
          copy(this->G,this->G+nodeNum+2,G1);
 
          //加入超级源与超级汇
          int superServer = nodeNum;//超级源
-         for(int i=0;i<servers.size();i++){
+         for(int i=0;i<serversNum;i++){
              //超级源与每个服务器建立边：费用0，容量无穷
              addEdge(G1,superServer,servers[i],INF,0);
          }
          int superConsumerNetNode = nodeNum+1;//超级汇
-         for(int i=0;i<consumerNetNodes.size();i++){
+         for(int i=0;i<consumerNum;i++){
              //超级汇与每个消费结点所连的网络结点建立边：费用为流量需求，容量无穷
              addEdge(G1,consumerNetNodes[i],superConsumerNetNode,graph.consumers[i].flowNeed,0);
          }
@@ -236,13 +246,16 @@ public:
              fill(inq, inq+nodeNum+2, false);//入队标志初始化
              dist[superServer] = 0;
              addflow[superServer] = INF;
-             q.push(P(0, superServer));
+             //q.push(P(0, superServer));
+             q.push(superServer);
              inq[superServer] = true;
              while (!q.empty())
              {
-                 P p = q.top();
+                 //P p = q.top();
+                 //q.pop();
+                 //int v = p.second;
+                 int v = q.front();
                  q.pop();
-                 int v = p.second;
                  inq[v] = false;
                  for (int i = 0; i<G1[v].size(); i++)
                  {
@@ -254,7 +267,8 @@ public:
                          preve[e.to] = i;//更新父边编号
                          addflow[e.to] = min(addflow[v], e.cap);
                          if(!inq[e.to]){
-                            q.push(P(dist[e.to], e.to));
+                            //q.push(P(dist[e.to], e.to));
+                            q.push(e.to);
                             inq[e.to] = true;
                          }
 

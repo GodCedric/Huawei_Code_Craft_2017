@@ -49,16 +49,16 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int generation = 10000;                     //设置迭代次数
     int geneBit = nodeNum;                //基因编码位数
     int maxServers = consumerNum;         //服务器最大配置数目
-    int chormNum = 50;                         //种群内染色体数量,先定个100条吧
+    int chormNum = 100;                         //种群内染色体数量,先定个100条吧
     const double crossoverRate = 0.7;                 //交叉概率
     const double mulationRate = 0.15;                  //突变概率
 
     //GA成员
     Chorm defaultChorm(0);
-    vector<Chorm> population(50,defaultChorm);   //种群
-    vector<Chorm> new_population(50,defaultChorm);          //更新的种群
+    vector<Chorm> population(100,defaultChorm);   //种群
+    vector<Chorm> new_population(100,defaultChorm);          //更新的种群
     srand((unsigned)time(NULL));                //随机数种子
-    vector<pair<int,int> > fitAll(50,{0,0});          //适应度,first为适应度，second为对应坐标
+    vector<pair<int,int> > fitAll(100,{0,0});          //适应度,first为适应度，second为对应坐标
 
     //初始最差解：每个消费节点相连的网络节点放个服务器
     ostringstream stream;
@@ -89,7 +89,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             population[initChormNum].gene[graph.G[netNum][j].to] = true;
             initChormNum++;
         }
-        if(initChormNum >= chormNum/1.5)
+        if(initChormNum >= chormNum*2/3)
             break;
     }
     //cout<<initChormNum<<endl;
@@ -102,36 +102,12 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int nProtect = 0;           //染色体保护数目
     bool breakflag = false;
     int cntValidChorm = 0;
+    //int cntMCF = 0;
     while(generation--){
         //cout<<generation<<endl;
 
-        //接近90s时停止迭代
-        //timelimit = gettime();
-        //if(timelimit > 88)
-            //break;
-
-
         //以最小费用流算法为适度函数，求各染色体适应度
-        for(int i=nProtect;i<population.size();i++){
-            decode(population[i], nodeNum, servers);//获取服务器部署
-            int fit = mincostflow.multiMinCostFlow2(servers);
-
-            if(gettime() > 87.5){
-                breakflag = true;
-                break;
-            }
-
-            fit += serverCost*servers.size();
-            fitAll[i].first = fit;                  //存储适应度
-            fitAll[i].second = i;                   //存储对应染色体坐标
-            population[i].fit = fit;                //得到适应度
-            //cout<<fit<<endl;
-        }
-
-
-
-
-        //fitness(population, mincostflow, servers, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
+        fitness(population, mincostflow, servers, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
         if(breakflag)
             break;
 
@@ -167,7 +143,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             }
             minCost = cost;
             cntChanged++;
-            //cout<<minCost<<endl;
+            cout<<minCost<<endl;
         }
         //cout<<cntValidChorm<<endl;
 
@@ -179,12 +155,12 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
         //收敛后退出
         //cout<<cntMinCost<<endl;
-        if(cntValidChorm>80 && tempMinCost == minCost){
+        if(cntValidChorm>50 && tempMinCost == minCost){
             cntMinCost++;
         }else{
             cntMinCost = 0;
         }
-        if((cntChanged>15||cntValidChorm>80) && cntMinCost>50){//如果50次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
+        if((cntChanged>15||cntValidChorm>50) && cntMinCost>25){//如果50次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
             break;
         }
         if(cntMinCost > 600)
@@ -195,7 +171,8 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     }
     //cout<<generation<<endl;
-    //cout<<10000 - generation<<endl;
+    cout<<10000 - generation<<endl;
+    //cout<<cntMCF<<endl;
 
     //string result = stream.str();
     //cout<<result<<endl;
