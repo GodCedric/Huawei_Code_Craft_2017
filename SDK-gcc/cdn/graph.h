@@ -43,6 +43,7 @@ public:
 
 	//图成员
 	vector<Edge> G[MAXN];			//网络结点邻接表
+	//vector< vector<Edge> > G(1000);  //
     vector<Consumer> consumers;		//消费节点数组
     map<int,int> netToConsumer;		//网络节点消费节点映射
 
