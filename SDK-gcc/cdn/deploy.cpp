@@ -14,6 +14,7 @@ using namespace std;
 //你要完成的功能总入口
 void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 {
+
     //程序计时
     double timelimit;
     timelimit = gettime();
@@ -31,6 +32,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //cout<<graph.G.size()<<endl;
     int nodeNum = graph.nodeNum;
     int consumerNum = graph.consumerNum;
+    int serverCost = graph.serverCost;
 
     //图分析，得到网络节点优先概率
     vector<double> probability(graph.nodeNum,0);
@@ -45,14 +47,16 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //////////GA搜索最优解
     //GA参数
     int generation = 10000;                     //设置迭代次数
-    int geneBit = graph.nodeNum;                //基因编码位数
-    int maxServers = graph.consumerNum;         //服务器最大配置数目
+    int geneBit = nodeNum;                //基因编码位数
+    int maxServers = consumerNum;         //服务器最大配置数目
     int chormNum = 50;                         //种群内染色体数量,先定个100条吧
     const double crossoverRate = 0.7;                 //交叉概率
     const double mulationRate = 0.15;                  //突变概率
 
     //GA成员
-    vector<Chorm> population(50);              //种群
+    Chorm defaultChorm(0);
+    vector<Chorm> population(50,defaultChorm);   //种群
+    vector<Chorm> new_population(50,defaultChorm);          //更新的种群
     srand((unsigned)time(NULL));                //随机数种子
     vector<pair<int,int> > fitAll(50,{0,0});          //适应度,first为适应度，second为对应坐标
 
@@ -97,6 +101,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int cntChanged = 0;         //最小代价改变次数
     int nProtect = 0;           //染色体保护数目
     bool breakflag = false;
+    int cntValidChorm = 0;
     while(generation--){
         //cout<<generation<<endl;
 
@@ -107,13 +112,31 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
 
         //以最小费用流算法为适度函数，求各染色体适应度
-        fitness(population, mincostflow, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
+        for(int i=nProtect;i<population.size();i++){
+            decode(population[i], nodeNum, servers);//获取服务器部署
+            int fit = mincostflow.multiMinCostFlow2(servers);
+
+            if(gettime() > 87.5){
+                breakflag = true;
+                break;
+            }
+
+            fit += serverCost*servers.size();
+            fitAll[i].first = fit;                  //存储适应度
+            fitAll[i].second = i;                   //存储对应染色体坐标
+            population[i].fit = fit;                //得到适应度
+            //cout<<fit<<endl;
+        }
+
+
+
+
+        //fitness(population, mincostflow, servers, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
         if(breakflag)
             break;
 
         //染色体选择
-        int cntValidChorm = 0;
-        vector<Chorm> new_population(50);          //更新的种群
+        cntValidChorm = 0;
         chormSelection(population, new_population, fitAll, cntValidChorm);
 
 

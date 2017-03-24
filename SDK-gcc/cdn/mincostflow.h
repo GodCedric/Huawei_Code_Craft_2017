@@ -81,7 +81,7 @@ public:
     }
 
     //多源多汇最小费用流算法
-    int multiMinCostFlow(const vector<int> &servers,            //服务器位置
+    int multiMinCostFlow(vector<int> &servers,            //服务器位置
                           vector<int> minCostPath[],int &m){   //路径及路径数目
          //创建残量网络副本
          //vector<Edge_MCF> G1[MAXN];
@@ -203,7 +203,7 @@ public:
 
 
     //多源多汇最小费用流算法，用于求fit，即不需要求path
-    int multiMinCostFlow2(const vector<int> &servers){
+    int multiMinCostFlow2(vector<int> &servers){
          //创建残量网络副本
          //vector<Edge_MCF> G1[MAXN];
          //copy(this->G,this->G+MAXN,G1);

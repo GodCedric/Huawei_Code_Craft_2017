@@ -6,8 +6,14 @@
 
 // 染色体
 struct Chorm{
-    bool gene[MAXN] = {false};                       //基因序列
-    int fit;                                //适应值
+    bool gene[MAXN];                       //基因序列
+    int fit = 0;                                //适应值
+
+    Chorm(int f):fit(f){
+        for(int i=0;i<MAXN;i++){
+            gene[i] = false;
+        }
+    }
     //double rfit;                          //相对fit值
     //double cfit;                          //积累概率
 };
@@ -30,7 +36,7 @@ void decode(Chorm& chorm, int nodeNum, vector<int>& servers){
 }
 
 // 完全随机产生染色体
-void randomChorm(Chorm& chorm, int chormNum, int geneBit, int maxServers){
+/*void randomChorm(Chorm& chorm, int chormNum, int geneBit, int maxServers){
     //服务器清空置零
     for(int m=0;m<geneBit;m++){
         chorm.gene[m] = false;
@@ -42,7 +48,7 @@ void randomChorm(Chorm& chorm, int chormNum, int geneBit, int maxServers){
         int index = rand() % geneBit;
         chorm.gene[index] = true;
     }
-}
+}*/
 
 // 随机生成一个有较大概率有解的染色体
 void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int geneBit, int maxServers){
@@ -78,18 +84,18 @@ void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int 
 }
 
 // 初始化种群  待修改
-void initChorm(vector<double>& probability, vector<Chorm>& population, int chormNum, int geneBit, int maxServers){
+/*void initChorm(vector<double>& probability, vector<Chorm>& population, int chormNum, int geneBit, int maxServers){
     //先把最差解放进去
 
 
     for(int i=1;i<chormNum;i++){
         generateChorm(population[i], probability, chormNum, geneBit, maxServers);
     }
-}
+}*/
 
 // 求各染色体的适应度
-void fitness(vector<Chorm>& population, MCF& mincostflow, int nodeNum, int serverCost, vector<pair<int,int> >& fitAll, int nProtect,bool& breakflag){
-    vector<int> servers;                //服务器位置
+/*void fitness(vector<Chorm>& population, MCF& mincostflow, vector<int>& servers,int nodeNum, int serverCost, vector<pair<int,int> >& fitAll, int nProtect,bool& breakflag){
+    //vector<int> servers;                //服务器位置
     int fit;                            //适应度
     //double timelimit;                   //程序计时
     for(int i=nProtect;i<population.size();i++){
@@ -107,7 +113,7 @@ void fitness(vector<Chorm>& population, MCF& mincostflow, int nodeNum, int serve
         population[i].fit = fit;                //得到适应度
         //cout<<fit<<endl;
     }
-}
+}*/
 
 // 染色体选择
 void chormSelection(vector<Chorm>& population, vector<Chorm>& new_population, vector<pair<int,int> >& fitAll, int& cntValidChorm){
@@ -123,9 +129,9 @@ void chormSelection(vector<Chorm>& population, vector<Chorm>& new_population, ve
 }
 
 // 交叉
-void crossover(const double crossoverRate,
+void crossover(double crossoverRate,
                vector<Chorm>& population, vector<Chorm>& new_population,
-               int& cntValidChorm, vector<double>& probability,
+               int cntValidChorm, vector<double>& probability,
                int chormNum, int geneBit, int maxServers, int nProtect){
 
     int m = 8;  //保护几条染色体
@@ -145,19 +151,25 @@ void crossover(const double crossoverRate,
         //前10个最小有效解两两交叉获得10个新的有效解,放在尾部
         nProtect = m;
         int cnt = 0;
+        int a = 0;
+        int b = 0;
         for(int i=0;i<m;i++){
             for(int j=i+1;j<m;j++){
                 cnt++;
-                int a = chormNum-x-cnt;
-                new_population[a] = population[i];
+                a = chormNum-x-cnt;
+                for(int k1=0;k1<geneBit;k1++){
+                    new_population[a].gene[k1] = population[i].gene[k1];
+                }
                 cnt++;
-                int b = chormNum-x-cnt;
-                new_population[b] = population[j];
+                b = chormNum-x-cnt;
+                for(int k1=0;k1<geneBit;k1++){
+                    new_population[b].gene[k1] = population[j].gene[k1];
+                }
                 //交叉，随机生成交叉起始点
                 int start = rand() / (chormNum-bitcnt);
                 //开始交叉
-                for(int m=start;m<bitcnt;m++){
-                    swap(new_population[a].gene[m],new_population[b].gene[m]);
+                for(int mm=start;mm<bitcnt;mm++){
+                    swap(new_population[a].gene[mm],new_population[b].gene[mm]);
                 }
             }
         }
