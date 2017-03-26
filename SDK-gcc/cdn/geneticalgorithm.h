@@ -6,7 +6,7 @@
 
 // 染色体
 struct Chorm{
-    bool gene[MAXN];                       //基因序列
+    bool gene[1000];                       //基因序列
     int fit = 0;                                //适应值
 
     Chorm(int f):fit(f){
@@ -108,6 +108,7 @@ void fitness(vector<Chorm>& population, MCF& mincostflow, vector<int>& servers,i
         }
 
         fit += serverCost*servers.size();
+        cout<<fit<<"  ";
         fitAll[i].first = fit;                  //存储适应度
         fitAll[i].second = i;                   //存储对应染色体坐标
         population[i].fit = fit;                //得到适应度
@@ -122,7 +123,7 @@ void chormSelection(vector<Chorm>& population, vector<Chorm>& new_population, ve
     sort(fitAll.begin(),fitAll.end());
     //将有解的染色体放到new_population里面
     for(int i=0;i<chormNum;i++){
-        if(fitAll[i].first<INF){
+        if(fitAll[i].first < 1000000){
             new_population[cntValidChorm++] = population[fitAll[i].second];
         }
     }

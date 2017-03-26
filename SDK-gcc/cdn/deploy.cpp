@@ -77,17 +77,49 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     cout<<worstCost<<endl;
     cout<<endl;
     result = stream.str();
-    //cout<<minCost<<endl;
-    //cout<<endl;
-    int tempMinCost = minCost;
-    int cntMinCost = 0;
-    //cout<<minCost<<endl;
+
+    //将与消费节点最近的网络节点生成一个染色体
+    int initChormNum = 1;
+    for(int i=0;i<graph.consumerNum;i++){
+        int netNum = graph.consumers[i].netNode;
+        int nn = graph.G[netNum].size();
+        for(int j=0;j<nn;j++){
+            population[initChormNum] = population[0];
+            population[initChormNum].gene[netNum] = false;
+            population[1].gene[graph.G[netNum][j].to] = true;
+            initChormNum++;
+        }
+        if(initChormNum >= chormNum*2/3)
+            break;
+    }
+
+    //初步寻优方案，以每个消费节点为起点，寻找各自满足单个消费节点的服务器部署位置
+    /*int singleCost;     //单消费节点最优
+    int localOpt = serverCost;  //局部最优
+    int cntStay = 0;        //保留优秀解的个数
+    vector<int> serversForCnos[nodeNum];       //保留对每个消费节点的最优服务器部署方案
+    for(int i=0;i<graph.consumers.size();i++){
+        singleCost = graph.spfa2(graph.consumers[i].netNode, servers, graph.consumers[i].flowNeed);
+        serversForCnos[i] = servers;
+        //if(singleCost < serverCost){    //说明该服务器有改进空间
+
+
+        //}
+        cout<<singleCost<<"  "<<serversForCnos[i].size()<<endl;
+    }
+    return;*/
 
     //初始化种群
     //将优良中基因与初始最差基因交配产生一批基因
+    //先将3个基因放进去
+    /*for(int i=0;i<geneBit;i++){
+        population[2].gene[i] = excellentGene[i];
+        population[3].gene[i] = goodGene[i];
+        population[4].gene[i] = mediumGene[i];
+    }
     int lengthGene = geneBit / 10;      //1/10的基因片段
     int initChormNum = 16;
-    for(int i=0;i<initChormNum;i++){
+    for(int i=5;i<initChormNum;i++){
         int start = rand() % (geneBit - lengthGene);
         population[i*3] = population[0];
         population[i*3+1] = population[0];
@@ -101,21 +133,11 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             swap(population[i*3+2].gene[j],mediumGene[j]);
         }
     }
-    /*for(int i=0;i<graph.consumerNum;i++){
-        int netNum = graph.consumers[i].netNode;
-        int nn = graph.G[netNum].size();
-        for(int j=0;j<nn;j++){
-            population[initChormNum] = population[0];
-            population[initChormNum].gene[netNum] = false;
-            population[initChormNum].gene[graph.G[netNum][j].to] = true;
-            initChormNum++;
-        }
-        if(initChormNum >= chormNum*2/3)
-            break;
-    }*/
+    initChormNum = 18*3 + 5;*/
+
     //cout<<initChormNum<<endl;
     //剩下的随机产生
-    for(int i=initChormNum*3+1;i<chormNum;i++){
+    for(int i=initChormNum;i<chormNum;i++){
         generateChorm(population[i], probability, chormNum, geneBit, maxServers);
     }
 
@@ -124,9 +146,11 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int nProtect = 0;           //染色体保护数目
     bool breakflag = false;
     int cntValidChorm = 0;
+    int tempMinCost = minCost;
+    int cntMinCost = 0;
     //int cntMCF = 0;
     while(generation--){
-        //cout<<generation<<endl;
+        cout<<generation<<endl;
 
         //以最小费用流算法为适度函数，求各染色体适应度
         fitness(population, mincostflow, servers, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
@@ -165,7 +189,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             }
             minCost = cost;
             cntChanged++;
-            //cout<<minCost<<endl;
+            cout<<minCost<<endl;
         }
         //cout<<cntValidChorm<<endl;
 
@@ -193,7 +217,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     }
     //cout<<generation<<endl;
-    //cout<<10000 - generation<<endl;
+    cout<<10000 - generation<<endl;
     //cout<<cntMCF<<endl;
 
     //string result = stream.str();

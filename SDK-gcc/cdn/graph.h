@@ -16,6 +16,7 @@ using namespace  std;
 #define MAXN 1000			//最大网络节点数
 //#define MAXEDGE 20          //每个节点链路数量上限
 #define INF 100000	    	//数值上限
+#define INFMAX 1000000      //代价上限
 #define MAXPATH 50000		//网络路径上限
 #define MAXPATHNODE 1000	//单条路径节点数上限
 //#define MAXSERVER 100
@@ -117,8 +118,6 @@ public:
                 if (e.cap>0 && dist[e.to]>dist[v]+e.cost)//松弛操作
                 {
                     dist[e.to] = dist[v] + e.cost;
-                    prevv[e.to] = v;//更新父结点
-                    preve[e.to] = i;//更新父边编号
                     addflow[e.to] = min(addflow[v], e.cap);
                     if(!inq[e.to]){
                         q.push(e.to);
@@ -139,16 +138,68 @@ public:
         for(int i=0;i<nodeNum;i++){
             if(i == start)
                 continue;
-            if(dist[i] < INF){
-                temp = dist[i]*128/addflow[i];
-                if(temp > maxValue){
-                    maxValue = temp;
-                    index3 = index2;
-                    index2 = index1;
-                    index1 = i;
+
+            temp = addflow[i]*64/dist[i];
+
+            if(temp > maxValue){
+                maxValue = temp;
+                index3 = index2;
+                index2 = index1;
+                index1 = i;
+            }
+        }
+    }
+
+    //spfa2
+    int spfa2(int start, vector<int>& singleServers, int f){
+        singleServers.clear();
+
+        fill(dist, dist+nodeNum, INF);//距离初始化为INF
+        fill(inq, inq+nodeNum, false);//入队标志初始化
+        dist[start] = 0;
+        addflow[start] = INF;
+        q.push(start);
+        inq[start] = true;
+        while (!q.empty())
+        {
+            int v = q.front();
+            q.pop();
+            inq[v] = false;
+            for (int i = 0; i<G[v].size(); i++)
+            {
+                Edge &e = G[v][i];
+                if (e.cap>0 && dist[e.to]>dist[v]+e.cost)//松弛操作
+                {
+                    dist[e.to] = dist[v] + e.cost;
+                    addflow[e.to] = min(addflow[v], e.cap);
+                    if(!inq[e.to]){
+                        q.push(e.to);
+                        inq[e.to] = true;
+                    }
+
                 }
             }
         }
+
+        vector<pair<int,int> > tempdist(nodeNum, {0,0});
+        for(int i=0;i<nodeNum;i++){
+            tempdist[i].first = dist[i];
+            tempdist[i].second = i;
+        }
+        sort(tempdist.begin(),tempdist.end());
+
+
+        //计算满足消费节点流量需求的最小cost服务器部署方案
+        int cnt = 1;
+        int cost = 0;
+        while(f>0){
+            int index = tempdist[cnt].second;
+            cost += tempdist[cnt].first * addflow[index] + serverCost;   //花费乘以流量加服务器
+            f -=  addflow[index];
+            singleServers.push_back(index);
+            cnt++;
+        }
+        return cost;
     }
 };
 
