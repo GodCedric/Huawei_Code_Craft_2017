@@ -14,12 +14,10 @@ using namespace  std;
 
 //全局变量
 #define MAXN 1000			//最大网络节点数
-//#define MAXEDGE 20          //每个节点链路数量上限
 #define INF 100000	    	//数值上限
 #define INFMAX 1000000      //代价上限
 #define MAXPATH 50000		//网络路径上限
 #define MAXPATHNODE 1000	//单条路径节点数上限
-//#define MAXSERVER 100
 
 //边
 struct Edge{
@@ -75,14 +73,12 @@ public:
 		serverCost = strtol(topo[2],NULL,10);
 
 		//初始化
-        init(nodeNum);
+        //init(nodeNum);
 		////初始化边
         for(int i=4;i<edgeNum+4;i++){
             Edge e;
             line=topo[i];
-			ss.clear();
-			ss.str("");
-            ss.str(line);
+			ss.clear();ss.str("");ss.str(line);
             ss>>e.from>>e.to>>e.cap>>e.cost;
             G[e.from].push_back(e);
         }
@@ -90,9 +86,7 @@ public:
         for(int i=5+edgeNum;i<consumerNum+5+edgeNum;i++){
             Consumer consumer;
             line=topo[i];
-            ss.clear();
-			ss.str("");
-            ss.str(line);
+            ss.clear();ss.str("");ss.str(line);
             ss>>consumer.no>>consumer.netNode>>consumer.flowNeed;
             netToConsumer[consumer.netNode]=consumer.no;
             consumers.push_back(consumer);

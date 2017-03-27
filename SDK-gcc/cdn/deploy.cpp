@@ -29,11 +29,22 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     // 创建图
     Graph graph;
     graph.createGraph(topo);
+    //int a=0,b=0,c=0;
+    //graph.spfa(0,a,b,c);
+    //return;
 
     //cout<<graph.G.size()<<endl;
     int nodeNum = graph.nodeNum;
     int consumerNum = graph.consumerNum;
     int serverCost = graph.serverCost;
+
+    //根据用例规模选择处理方案
+    int Judge;
+    if(nodeNum > 200){
+        Judge = 1;  //中高级用例一套方案
+    }else{
+        Judge = 0;  //初级用例一套方案
+    }
 
     //图分析，得到网络节点优先概率
     bool excellentGene[MAXN];       //优秀基因
@@ -65,12 +76,14 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     vector<pair<int,int> > fitAll(100,{0,0});          //适应度,first为适应度，second为对应坐标
 
     //初始最差解：每个消费节点相连的网络节点放个服务器
+    set<int> firstLevel;
     ostringstream stream;
     stream<<graph.consumerNum<<"\n"<<"\n";
     for(int i=0;i<graph.consumerNum;i++){
         stream<<graph.consumers[i].netNode<<" "<<i<<" "<<graph.consumers[i].flowNeed<<"\n";
         //初始种群设置
         population[0].gene[graph.consumers[i].netNode] = true;  //把最差解先放进去
+        firstLevel.insert(graph.consumers[i].netNode);
     }
     minCost = graph.consumerNum*graph.serverCost;       //以最差解费用初始化最小费用
     int worstCost = minCost;
@@ -78,20 +91,143 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     cout<<endl;
     result = stream.str();
 
-    //将与消费节点最近的网络节点生成一个染色体
-    int initChormNum = 1;
+    //初步寻优，第一层服务器有相连的可能降低代价
+    bool breakflag = false;
+    Chorm localOpt = population[0];
+    Chorm localIni = localOpt;
+    int localCost = worstCost;
     for(int i=0;i<graph.consumerNum;i++){
         int netNum = graph.consumers[i].netNode;
         int nn = graph.G[netNum].size();
+        Chorm chorm1 = population[0];
+        Chorm chorm2 = population[0];
+        int fit1;
+        int fit2;
         for(int j=0;j<nn;j++){
-            population[initChormNum] = population[0];
-            population[initChormNum].gene[netNum] = false;
-            population[1].gene[graph.G[netNum][j].to] = true;
-            initChormNum++;
+
+            //时间控制
+            if(gettime() > 88){
+                breakflag = true;
+                break;
+            }
+
+            int second = graph.G[netNum][j].to;
+            if(firstLevel.find(second) != firstLevel.end()){//如果在第一层找到，证明有联系，可能降低代价
+                chorm1.gene[netNum] = false;
+                chorm2.gene[second] = false;
+
+                decode(chorm1, nodeNum, servers);//获取服务器部署
+                int fit1 = mincostflow.multiMinCostFlow2(servers);
+                fit1 += serverCost*servers.size();
+
+                decode(chorm2, nodeNum, servers);//获取服务器部署
+                int fit2 = mincostflow.multiMinCostFlow2(servers);
+                fit2 += serverCost*servers.size();
+
+                if(fit1<fit2 && fit1<INFMAX){//如果fit1是较小解
+                    localIni = localOpt;
+
+                    localOpt.gene[netNum] = false;
+                    decode(localOpt, nodeNum, servers);//获取服务器部署
+                    int fit = mincostflow.multiMinCostFlow2(servers);
+                    fit += serverCost*servers.size();
+                    if(fit<INFMAX && fit<localCost){
+                        //满足减小代价，保留更改
+                        localCost = fit;
+                        cout<<fit<<endl;
+                    }else{//没有减小代价或无解，返回初始状态
+                        localOpt = localIni;
+                    }
+                }else if(fit2<fit1 && fit2<INFMAX){
+                    localIni = localOpt;
+
+                    localOpt.gene[second] = false;
+                    decode(localOpt, nodeNum, servers);//获取服务器部署
+                    int fit = mincostflow.multiMinCostFlow2(servers);
+                    fit += serverCost*servers.size();
+                    if(fit<INFMAX && fit<localCost){
+                        //满足减小代价，保留更改
+                        localCost = fit;
+                        cout<<fit<<endl;
+                    }else{//没有减小代价或无解，返回初始状态
+                        localOpt = localIni;
+                    }
+                }
+            }
         }
-        if(initChormNum >= chormNum*2/3)
+        if(breakflag)
             break;
     }
+
+    decode(localOpt, geneBit, servers);
+    res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
+    cost = res+graph.serverCost*servers.size();
+    if(res!=INF && cost<minCost){
+        stream.clear();stream.str("");
+        stream<<m<<"\n"<<"\n";
+        for(int i=0;i<m;i++){
+            for(int j=0;j<minCostPath[i].size();j++){
+                stream<<minCostPath[i][j];
+                if(j == minCostPath[i].size()-1)
+                    stream<<"\n";
+                else
+                    stream<<" ";
+            }
+        }
+        result = stream.str();
+    }
+    /*if(breakflag){
+        write_result(result.c_str(), filename);
+        return;
+    }*/
+    write_result(result.c_str(), filename);
+    return;
+
+    minCost = cost;
+    population[1] = localOpt;
+
+    if(Judge == 1){
+        //剩下的随机产生
+        for(int i=2;i<chormNum;i++){
+            randomChorm(population[i],chormNum,geneBit,maxServers);
+            //generateChorm(population[i], probability, chormNum, geneBit, maxServers);
+        }
+    }else{
+        //将与消费节点最近的网络节点生成一个染色体
+        int initChormNum = 2;
+        for(int i=0;i<graph.consumerNum;i++){
+            int netNum = graph.consumers[i].netNode;
+            int nn = graph.G[netNum].size();
+            for(int j=0;j<nn;j++){
+                population[initChormNum] = population[0];
+                population[initChormNum].gene[netNum] = false;
+                population[initChormNum].gene[graph.G[netNum][j].to] = true;
+                initChormNum++;
+            }
+            if(initChormNum >= 80)
+                break;
+        }
+        //剩下的随机产生
+        for(int i=initChormNum;i<chormNum;i++){
+            //randomChorm(population[i],chormNum,geneBit,maxServers);
+            generateChorm(population[i], probability, chormNum, geneBit, maxServers);
+        }
+    }
+
+    //0和1号染色体随机交配产生100条染色体
+    /*int lengthGene = geneBit / 20;
+    for(int i=2;i<chormNum;i++){
+    	population[i] = population[0];
+    	//population[i+1] = population[1];
+    	int start = rand() % (geneBit - lengthGene);
+    	for(int j=0;j<lengthGene;j++){
+    	    swap(population[i].gene[j],population[1].gene[j]);
+    	}
+    }*/
+
+
+
+
 
     //初步寻优方案，以每个消费节点为起点，寻找各自满足单个消费节点的服务器部署位置
     /*int singleCost;     //单消费节点最优
@@ -135,22 +271,15 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     }
     initChormNum = 18*3 + 5;*/
 
-    //cout<<initChormNum<<endl;
-    //剩下的随机产生
-    for(int i=initChormNum;i<chormNum;i++){
-        generateChorm(population[i], probability, chormNum, geneBit, maxServers);
-    }
-
     //GA迭代
     int cntChanged = 0;         //最小代价改变次数
     int nProtect = 0;           //染色体保护数目
-    bool breakflag = false;
     int cntValidChorm = 0;
     int tempMinCost = minCost;
     int cntMinCost = 0;
     //int cntMCF = 0;
     while(generation--){
-        cout<<generation<<endl;
+        //cout<<generation<<endl;
 
         //以最小费用流算法为适度函数，求各染色体适应度
         fitness(population, mincostflow, servers, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
@@ -194,14 +323,14 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         //cout<<cntValidChorm<<endl;
 
         //交叉
-        crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers, nProtect);
+        crossover(crossoverRate, population, new_population, cntValidChorm, chormNum, geneBit, maxServers, nProtect);
 
         //变异
         mutation(mulationRate, population, chormNum, geneBit);
 
         //收敛后退出
         //cout<<cntMinCost<<endl;
-        if(cntValidChorm>50 && tempMinCost == minCost){
+        /*if(cntValidChorm>50 && tempMinCost == minCost){
             cntMinCost++;
         }else{
             cntMinCost = 0;
@@ -211,7 +340,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         }
         if(cntMinCost > 600)
             break;
-        tempMinCost = minCost;
+        tempMinCost = minCost;*/
         //cout<<minCost<<endl;
         //break;
 

@@ -3,19 +3,12 @@
 #ifndef __MINCOSTFLOW__H__
 #define __MINCOSTFLOW__H__
 
-//#include <iostream>
-//#include <vector>
-//#include <queue>
 #include <stack>
-//#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include "graph.h"
 
 using namespace std;
-
-//队列元素
-typedef pair<int, int> P;//first保存最短距离，second保存顶点的编号
 
 //残存网络边
 struct Edge_MCF
@@ -41,7 +34,8 @@ private:
 
     vector<int> consumerNetNodes;   //消费节点所连网络节点
     int f_all;                      //消费节点容量需求和
-    //priority_queue<P, vector<P>, greater<P> >q;//队列
+    int superServer;//超级源
+    int superConsumerNetNode;//超级汇
 
 
 public:
@@ -50,6 +44,8 @@ public:
 
         nodeNum = graph.nodeNum;
         consumerNum = graph.consumerNum;
+        superServer = nodeNum;
+        superConsumerNetNode = nodeNum + 1;
 
         this->graph = graph;
 
@@ -66,6 +62,23 @@ public:
         for(int i=0;i<consumerNum;i++){
             consumerNetNodes.push_back(graph.consumers[i].netNode);
             f_all += graph.consumers[i].flowNeed;
+        }
+
+        //按照二级网络建立MCF
+        /*for (int i=0;i<consumerNetNodes.size();i++)
+        {
+            int v = consumerNetNodes[i];
+            for(int j=0;j<graph.G[v].size();j++){
+                addEdge(graph.G[v][j].from,graph.G[v][j].to,
+                            graph.G[v][j].cap,graph.G[v][j].cost);
+            }
+        }*/
+
+
+        //加入超级汇点
+        for(int i=0;i<consumerNum;i++){
+            //超级汇与每个消费结点所连的网络结点建立边：费用为流量需求，容量无穷
+            addEdge(G,consumerNetNodes[i],superConsumerNetNode,graph.consumers[i].flowNeed,0);
         }
 
     }
@@ -101,11 +114,7 @@ public:
              //超级源与每个服务器建立边：费用0，容量无穷
              addEdge(G1,superServer,servers[i],INF,0);
          }
-         int superConsumerNetNode = nodeNum+1;//超级汇
-         for(int i=0;i<consumerNum;i++){
-             //超级汇与每个消费结点所连的网络结点建立边：费用为流量需求，容量无穷
-             addEdge(G1,consumerNetNodes[i],superConsumerNetNode,graph.consumers[i].flowNeed,0);
-         }
+
 
          //最小费用流
          //初始化参数
@@ -158,7 +167,7 @@ public:
 
              //判断是否存在最短路径，若否，返回最大值
              if (dist[superConsumerNetNode] == INF){
-                 return INF;
+                 return INFMAX;
              }
 
              //求取最短路径最小流量增加量
@@ -226,11 +235,11 @@ public:
              //超级源与每个服务器建立边：费用0，容量无穷
              addEdge(G1,superServer,servers[i],INF,0);
          }
-         int superConsumerNetNode = nodeNum+1;//超级汇
-         for(int i=0;i<consumerNum;i++){
+         //int superConsumerNetNode = nodeNum+1;//超级汇
+         //for(int i=0;i<consumerNum;i++){
              //超级汇与每个消费结点所连的网络结点建立边：费用为流量需求，容量无穷
-             addEdge(G1,consumerNetNodes[i],superConsumerNetNode,graph.consumers[i].flowNeed,0);
-         }
+             //addEdge(G1,consumerNetNodes[i],superConsumerNetNode,graph.consumers[i].flowNeed,0);
+         //}
 
          //最小费用流
          //初始化参数
@@ -278,7 +287,7 @@ public:
 
              //判断是否存在最短路径，若否，返回最大值
              if (dist[superConsumerNetNode] == INF){
-                 return INF;
+                 return INFMAX;
              }
 
              //求取最短路径最小流量增加量
