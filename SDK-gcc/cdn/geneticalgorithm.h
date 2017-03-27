@@ -131,12 +131,12 @@ void chormSelection(vector<Chorm>& population, vector<Chorm>& new_population, ve
 // 交叉
 void crossover(double crossoverRate,
                vector<Chorm>& population, vector<Chorm>& new_population,
-               int cntValidChorm,
+               int cntValidChorm, vector<double>& probability,
                int chormNum, int geneBit, int maxServers, int nProtect){
 
     int m = 5;  //保护几条染色体
     int n = 15;  //有几条交叉感染的染色体
-    int x = 5;  //留出10条染色体的位置随机生成，保证种群多样性
+    int x = 20;  //留出10条染色体的位置随机生成，保证种群多样性
 
     //交叉位数，有10%的染色体基因发生交叉
     const int bitcnt = geneBit / 10;
@@ -144,8 +144,8 @@ void crossover(double crossoverRate,
     //不满足10个解的继续寻找，满足的解保留，不满足的更新
     if(cntValidChorm < m){
         for(int i=cntValidChorm;i<chormNum;i++){
-            //generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
-            randomChorm(new_population[i], chormNum, geneBit, maxServers);
+            generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
+            //randomChorm(new_population[i], chormNum, geneBit, maxServers);
         }
         nProtect = cntValidChorm;
     }else{//已经存在10个有效解了
@@ -192,8 +192,8 @@ void crossover(double crossoverRate,
         }
         //剩下的无解的染色体仍然按照随机生成，并且至少保证留出来20个染色体为随机生成，补充种群多样性
         for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;i++){
-            //generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
-            randomChorm(new_population[i], chormNum, geneBit, maxServers);
+            generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
+            //randomChorm(new_population[i], chormNum, geneBit, maxServers);
         }
     }
 

@@ -77,6 +77,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     //初始最差解：每个消费节点相连的网络节点放个服务器
     set<int> firstLevel;
+    map<int,vector<int> > secondLevel;
     ostringstream stream;
     stream<<graph.consumerNum<<"\n"<<"\n";
     for(int i=0;i<graph.consumerNum;i++){
@@ -112,7 +113,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             }
 
             int second = graph.G[netNum][j].to;
-            if(firstLevel.find(second) != firstLevel.end()){//如果在第一层找到，证明有联系，可能降低代价
+            if(firstLevel.find(second) != firstLevel.end()){//如果在第一层找到，证明有链路相连，可能降低代价
                 chorm1.gene[netNum] = false;
                 chorm2.gene[second] = false;
 
@@ -153,10 +154,84 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                         localOpt = localIni;
                     }
                 }
+            }else{//否则的话，此节点在树中的深度为2,存下来用于二级深度寻优
+                secondLevel[second].push_back(netNum);
             }
         }
         if(breakflag)
             break;
+    }
+
+    /*map<int,vector<int> >::iterator itr = secondLevel.begin();
+    for(;itr!=secondLevel.end();itr++){
+        vector<int> temp = itr->second;
+        cout<<itr->first<<" :";
+        for(int i=0;i<temp.size();i++){
+            cout<<temp[i]<<" ";
+        }
+        cout<<endl;
+    }*/
+
+    decode(localOpt, geneBit, servers);
+    res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
+    cost = res+graph.serverCost*servers.size();
+    if(res!=INF && cost<minCost){
+        stream.clear();stream.str("");
+        stream<<m<<"\n"<<"\n";
+        for(int i=0;i<m;i++){
+            for(int j=0;j<minCostPath[i].size();j++){
+                stream<<minCostPath[i][j];
+                if(j == minCostPath[i].size()-1)
+                    stream<<"\n";
+                else
+                    stream<<" ";
+            }
+        }
+        result = stream.str();
+    }
+    if(breakflag){
+        write_result(result.c_str(), filename);
+        return;
+    }
+    //write_result(result.c_str(), filename);
+    //return;
+
+    minCost = cost;
+    population[1] = localOpt;
+
+    cout<<"**********************"<<endl;
+
+    //二级深度寻优
+    map<int,vector<int> >::iterator itr = secondLevel.begin();
+    for(;itr!=secondLevel.end();itr++){
+        //时间控制
+        if(gettime() > 88){
+            breakflag = true;
+            break;
+        }
+
+        int ind = itr->first;
+        vector<int> deep2 = itr->second;
+        if(deep2.size() > 1){//有降低代价的可能
+            localIni = localOpt;
+
+            localOpt.gene[ind] = true;
+            for(int i=0;i<deep2.size();i++){
+                localOpt.gene[deep2[i]] = false;
+            }
+
+            decode(localOpt, nodeNum, servers);//获取服务器部署
+            int fit = mincostflow.multiMinCostFlow2(servers);
+            fit += serverCost*servers.size();
+
+            if(fit<INFMAX && fit<localCost){
+                //满足减小代价，保留更改
+                localCost = fit;
+                cout<<fit<<endl;
+            }else{//没有减小代价或无解，返回初始状态
+                localOpt = localIni;
+            }
+        }
     }
 
     decode(localOpt, geneBit, servers);
@@ -176,25 +251,29 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         }
         result = stream.str();
     }
-    /*if(breakflag){
+
+    if(breakflag){
         write_result(result.c_str(), filename);
         return;
-    }*/
-    write_result(result.c_str(), filename);
-    return;
+    }
 
     minCost = cost;
-    population[1] = localOpt;
+    population[2] = localOpt;
+
+    //////////以上两级寻优主要针对中高级测试用例
+    //////////初级测试用例仍主要采用遗传
+    //////////中级用例仍有优化空间
+
 
     if(Judge == 1){
         //剩下的随机产生
-        for(int i=2;i<chormNum;i++){
+        for(int i=3;i<chormNum;i++){
             randomChorm(population[i],chormNum,geneBit,maxServers);
             //generateChorm(population[i], probability, chormNum, geneBit, maxServers);
         }
     }else{
         //将与消费节点最近的网络节点生成一个染色体
-        int initChormNum = 2;
+        /*int initChormNum = 1;
         for(int i=0;i<graph.consumerNum;i++){
             int netNum = graph.consumers[i].netNode;
             int nn = graph.G[netNum].size();
@@ -206,25 +285,51 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             }
             if(initChormNum >= 80)
                 break;
+        }*/
+
+        //0和1号染色体随机交配产生100条染色体
+        /*int lengthGene = geneBit / 20;
+        for(int i=2;i<chormNum-1;){
+            population[i] = population[0];
+            population[i+1] = population[1];
+            int start = rand() % (geneBit - lengthGene);
+            for(int j=0;j<lengthGene;j++){
+                swap(population[i].gene[j],population[i+1].gene[j]);
+            }
+            i += 2;
+        }*/
+
+        //将优良中基因与初始最差基因交配产生一批基因
+        //先将3个基因放进去
+        for(int i=0;i<geneBit;i++){
+            population[1].gene[i] = excellentGene[i];
+            population[2].gene[i] = goodGene[i];
+            population[3].gene[i] = mediumGene[i];
         }
+        int lengthGene = geneBit / 10;      //1/10的基因片段
+        int initChormNum = 16;
+        for(int i=4;i<initChormNum;i++){
+            int start = rand() % (geneBit - lengthGene);
+            population[i*3] = population[0];
+            population[i*3+1] = population[0];
+            population[i*3+2] = population[0];
+            for(int j=0;j<lengthGene;j++){
+                //优等基因交换
+                swap(population[i*3].gene[j],excellentGene[j]);
+                //良好基因交换
+                swap(population[i*3+1].gene[j],goodGene[j]);
+                //中等基因交换
+                swap(population[i*3+2].gene[j],mediumGene[j]);
+            }
+        }
+        initChormNum = 18*3 + 4;
+
         //剩下的随机产生
         for(int i=initChormNum;i<chormNum;i++){
             //randomChorm(population[i],chormNum,geneBit,maxServers);
             generateChorm(population[i], probability, chormNum, geneBit, maxServers);
         }
     }
-
-    //0和1号染色体随机交配产生100条染色体
-    /*int lengthGene = geneBit / 20;
-    for(int i=2;i<chormNum;i++){
-    	population[i] = population[0];
-    	//population[i+1] = population[1];
-    	int start = rand() % (geneBit - lengthGene);
-    	for(int j=0;j<lengthGene;j++){
-    	    swap(population[i].gene[j],population[1].gene[j]);
-    	}
-    }*/
-
 
 
 
@@ -245,38 +350,13 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     }
     return;*/
 
-    //初始化种群
-    //将优良中基因与初始最差基因交配产生一批基因
-    //先将3个基因放进去
-    /*for(int i=0;i<geneBit;i++){
-        population[2].gene[i] = excellentGene[i];
-        population[3].gene[i] = goodGene[i];
-        population[4].gene[i] = mediumGene[i];
-    }
-    int lengthGene = geneBit / 10;      //1/10的基因片段
-    int initChormNum = 16;
-    for(int i=5;i<initChormNum;i++){
-        int start = rand() % (geneBit - lengthGene);
-        population[i*3] = population[0];
-        population[i*3+1] = population[0];
-        population[i*3+2] = population[0];
-        for(int j=0;j<lengthGene;j++){
-            //优等基因交换
-            swap(population[i*3].gene[j],excellentGene[j]);
-            //良好基因交换
-            swap(population[i*3+1].gene[j],goodGene[j]);
-            //中等基因交换
-            swap(population[i*3+2].gene[j],mediumGene[j]);
-        }
-    }
-    initChormNum = 18*3 + 5;*/
-
     //GA迭代
     int cntChanged = 0;         //最小代价改变次数
     int nProtect = 0;           //染色体保护数目
     int cntValidChorm = 0;
     int tempMinCost = minCost;
     int cntMinCost = 0;
+    minCost = worstCost;
     //int cntMCF = 0;
     while(generation--){
         //cout<<generation<<endl;
@@ -323,7 +403,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         //cout<<cntValidChorm<<endl;
 
         //交叉
-        crossover(crossoverRate, population, new_population, cntValidChorm, chormNum, geneBit, maxServers, nProtect);
+        crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers, nProtect);
 
         //变异
         mutation(mulationRate, population, chormNum, geneBit);
