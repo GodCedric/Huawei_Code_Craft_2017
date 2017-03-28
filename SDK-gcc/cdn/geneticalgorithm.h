@@ -78,8 +78,20 @@ void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int 
     for(itr=serversIndex.begin();itr!=serversIndex.end();itr++){
         chorm.gene[*itr] = true;
     }
-
 }
+
+// 随机生成一个有较大概率有解的染色体
+void generateChorm2(Chorm& chorm, Chorm chorm1, int geneBit){
+
+    //以当前最优解执行变异操作，产生新解
+    chorm = chorm1;
+    int n = rand() % 5; //变异个数
+    while(n--){
+        int index = rand() % geneBit;
+        chorm.gene[index] = ! chorm.gene[index];
+    }
+}
+
 
 // 初始化种群  待修改
 /*void initChorm(vector<double>& probability, vector<Chorm>& population, int chormNum, int geneBit, int maxServers){
@@ -144,12 +156,13 @@ void crossover(double crossoverRate,
     //不满足10个解的继续寻找，满足的解保留，不满足的更新
     if(cntValidChorm < m){
         for(int i=cntValidChorm;i<chormNum;i++){
-            generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
+            generateChorm2(population[i], population[0], geneBit);
+            //generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
             //randomChorm(new_population[i], chormNum, geneBit, maxServers);
         }
         nProtect = cntValidChorm;
-    }else{//已经存在10个有效解了
-        //前10个最小有效解两两交叉获得10个新的有效解,放在尾部
+    }else{//已经存在5个有效解了
+        //前10个最小有效解两两交叉获得15个新的有效解,放在尾部
         nProtect = m;
         int cnt = 0;
         int a = 0;
@@ -192,7 +205,8 @@ void crossover(double crossoverRate,
         }
         //剩下的无解的染色体仍然按照随机生成，并且至少保证留出来20个染色体为随机生成，补充种群多样性
         for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;i++){
-            generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
+            generateChorm2(population[i], population[0], geneBit);
+            //generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
             //randomChorm(new_population[i], chormNum, geneBit, maxServers);
         }
     }

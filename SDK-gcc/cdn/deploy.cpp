@@ -107,7 +107,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         for(int j=0;j<nn;j++){
 
             //时间控制
-            if(gettime() > 88){
+            if(gettime() > 500){
                 breakflag = true;
                 break;
             }
@@ -202,10 +202,12 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     cout<<"**********************"<<endl;
 
     //二级深度寻优
+    //localOpt = population[0];
+    //localCost = worstCost;
     map<int,vector<int> >::iterator itr = secondLevel.begin();
     for(;itr!=secondLevel.end();itr++){
         //时间控制
-        if(gettime() > 88){
+        if(gettime() > 500){
             breakflag = true;
             break;
         }
@@ -216,20 +218,23 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             localIni = localOpt;
 
             localOpt.gene[ind] = true;
-            for(int i=0;i<deep2.size();i++){
-                localOpt.gene[deep2[i]] = false;
-            }
+            for(int i=0;i<deep2.size()-1;i++){
+                for(int j=i+1;j<deep2.size();j++){
+                    localOpt.gene[deep2[i]] = false;
+                    localOpt.gene[deep2[j]] = false;
 
-            decode(localOpt, nodeNum, servers);//获取服务器部署
-            int fit = mincostflow.multiMinCostFlow2(servers);
-            fit += serverCost*servers.size();
+                    decode(localOpt, nodeNum, servers);//获取服务器部署
+                    int fit = mincostflow.multiMinCostFlow2(servers);
+                    fit += serverCost*servers.size();
 
-            if(fit<INFMAX && fit<localCost){
-                //满足减小代价，保留更改
-                localCost = fit;
-                cout<<fit<<endl;
-            }else{//没有减小代价或无解，返回初始状态
-                localOpt = localIni;
+                    if(fit<INFMAX && fit<localCost){
+                        //满足减小代价，保留更改
+                        localCost = fit;
+                        cout<<fit<<endl;
+                    }else{//没有减小代价或无解，返回初始状态
+                        localOpt = localIni;
+                    }
+                }
             }
         }
     }
@@ -259,19 +264,27 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     minCost = cost;
     population[2] = localOpt;
+    cout<<"**********************"<<endl;
+    //return;
 
     //////////以上两级寻优主要针对中高级测试用例
     //////////初级测试用例仍主要采用遗传
-    //////////中级用例仍有优化空间
+    //////////
 
 
     if(Judge == 1){
         //剩下的随机产生
         for(int i=3;i<chormNum;i++){
-            randomChorm(population[i],chormNum,geneBit,maxServers);
+            generateChorm2(population[i], localOpt, geneBit);
+            //randomChorm(population[i],chormNum,geneBit,maxServers);
             //generateChorm(population[i], probability, chormNum, geneBit, maxServers);
         }
     }else{
+        for(int i=3;i<chormNum;i++){
+            generateChorm2(population[i], localOpt, geneBit);
+            //randomChorm(population[i],chormNum,geneBit,maxServers);
+            //generateChorm(population[i], probability, chormNum, geneBit, maxServers);
+        }
         //将与消费节点最近的网络节点生成一个染色体
         /*int initChormNum = 1;
         for(int i=0;i<graph.consumerNum;i++){
@@ -301,18 +314,18 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
         //将优良中基因与初始最差基因交配产生一批基因
         //先将3个基因放进去
-        for(int i=0;i<geneBit;i++){
-            population[1].gene[i] = excellentGene[i];
-            population[2].gene[i] = goodGene[i];
-            population[3].gene[i] = mediumGene[i];
+        /*for(int i=0;i<geneBit;i++){
+            population[3].gene[i] = excellentGene[i];
+            population[4].gene[i] = goodGene[i];
+            population[5].gene[i] = mediumGene[i];
         }
         int lengthGene = geneBit / 10;      //1/10的基因片段
         int initChormNum = 16;
-        for(int i=4;i<initChormNum;i++){
+        for(int i=0;i<initChormNum;i++){
             int start = rand() % (geneBit - lengthGene);
-            population[i*3] = population[0];
-            population[i*3+1] = population[0];
-            population[i*3+2] = population[0];
+            population[6+i*3] = population[0];
+            population[6+i*3+1] = population[1];
+            population[6+i*3+2] = population[2];
             for(int j=0;j<lengthGene;j++){
                 //优等基因交换
                 swap(population[i*3].gene[j],excellentGene[j]);
@@ -322,13 +335,13 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                 swap(population[i*3+2].gene[j],mediumGene[j]);
             }
         }
-        initChormNum = 18*3 + 4;
+        initChormNum = 18*3 + 6;
 
         //剩下的随机产生
         for(int i=initChormNum;i<chormNum;i++){
             //randomChorm(population[i],chormNum,geneBit,maxServers);
             generateChorm(population[i], probability, chormNum, geneBit, maxServers);
-        }
+        }*/
     }
 
 
