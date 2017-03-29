@@ -107,7 +107,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         for(int j=0;j<nn;j++){
 
             //时间控制
-            if(gettime() > 500){
+            if(gettime() > 88){
                 breakflag = true;
                 break;
             }
@@ -205,9 +205,10 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //localOpt = population[0];
     //localCost = worstCost;
     map<int,vector<int> >::iterator itr = secondLevel.begin();
+    Chorm temp = localOpt;
     for(;itr!=secondLevel.end();itr++){
         //时间控制
-        if(gettime() > 500){
+        if(gettime() > 88){
             breakflag = true;
             break;
         }
@@ -229,6 +230,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
                     if(fit<INFMAX && fit<localCost){
                         //满足减小代价，保留更改
+                        temp = localOpt;
                         localCost = fit;
                         cout<<fit<<endl;
                     }else{//没有减小代价或无解，返回初始状态
@@ -239,6 +241,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         }
     }
 
+    localOpt = temp;
     decode(localOpt, geneBit, servers);
     res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
     cost = res+graph.serverCost*servers.size();
@@ -369,7 +372,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int cntValidChorm = 0;
     int tempMinCost = minCost;
     int cntMinCost = 0;
-    minCost = worstCost;
+    //minCost = worstCost;
     //int cntMCF = 0;
     while(generation--){
         //cout<<generation<<endl;

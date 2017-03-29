@@ -86,12 +86,15 @@ public:
     //给残存网络中添加边（上下行链路及其反向边）
     void addEdge(int from, int to, int cap, int cost)
     {
+        int sz1 = G[from].size();
+        int sz2 = G[to].size();
+
         //  上行路及其反向边
-        G[from].push_back(Edge_MCF( to, cap, cost, G[to].size()));
-        G[to].push_back(Edge_MCF( from, 0, -cost, G[from].size() - 1 ));
+        G[from].push_back(Edge_MCF( to, cap, cost, sz2));
+        G[to].push_back(Edge_MCF( from, 0, -cost, sz1));
         // 下行路及其反向边
-        G[to].push_back(Edge_MCF( from, cap, cost, G[from].size()));
-        G[from].push_back(Edge_MCF( to, 0, -cost, G[to].size() - 1));
+        G[to].push_back(Edge_MCF( from, cap, cost, sz1+1));
+        G[from].push_back(Edge_MCF( to, 0, -cost, sz2+1));
     }
     //超级源点，超级汇点添加边
     void addEdge(vector<Edge_MCF> G1[],int from,int to,int cap,int cost){
@@ -146,7 +149,8 @@ public:
                  int v = q.front();
                  q.pop();
                  inq[v] = false;
-                 for (int i = 0; i<G1[v].size(); i++)
+                 int sz = G1[v].size();
+                 for (int i = 0; i<sz; i++)
                  {
                      Edge_MCF &e = G1[v][i];
                      if (e.cap>0 && dist[e.to]>dist[v]+e.cost)//松弛操作
@@ -266,7 +270,8 @@ public:
                  int v = q.front();
                  q.pop();
                  inq[v] = false;
-                 for (int i = 0; i<G1[v].size(); i++)
+                 int sz = G1[v].size();
+                 for (int i = 0; i<sz; i++)
                  {
                      Edge_MCF &e = G1[v][i];
                      if (e.cap>0 && dist[e.to]>dist[v]+e.cost)//松弛操作
