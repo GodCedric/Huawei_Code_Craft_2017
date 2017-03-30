@@ -96,12 +96,16 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     bool breakflag = false;
     Chorm localOpt = population[0];
     Chorm localIni = localOpt;
+    Chorm localIni1 = localOpt;
+    Chorm localIni2 = localOpt;
     int localCost = worstCost;
     for(int i=0;i<graph.consumerNum;i++){
         int netNum = graph.consumers[i].netNode;
+        if(firstLevel.find(netNum) == firstLevel.end())
+            continue;
         int nn = graph.G[netNum].size();
-        Chorm chorm1 = population[0];
-        Chorm chorm2 = population[0];
+        //Chorm chorm1 = population[0];
+        //Chorm chorm2 = population[0];
         int fit1;
         int fit2;
         for(int j=0;j<nn;j++){
@@ -113,13 +117,48 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             }
 
             int second = graph.G[netNum][j].to;
-            if(firstLevel.find(second) != firstLevel.end()){//如果在第一层找到，证明有链路相连，可能降低代价
-                chorm1.gene[netNum] = false;
-                chorm2.gene[second] = false;
 
-                decode(chorm1, nodeNum, servers);//获取服务器部署
-                int fit1 = mincostflow.multiMinCostFlow2(servers);
+            if(firstLevel.find(second) != firstLevel.end()){
+                localIni = localOpt;
+                localOpt.gene[netNum] = false;
+                decode(localOpt, nodeNum, servers);//获取服务器部署
+                fit1 = mincostflow.multiMinCostFlow2(servers);
                 fit1 += serverCost*servers.size();
+                localIni1 = localOpt;
+
+                localOpt = localIni;
+                localOpt.gene[second] = false;
+                decode(localOpt, nodeNum, servers);//获取服务器部署
+                fit2 = mincostflow.multiMinCostFlow2(servers);
+                fit2 += serverCost*servers.size();
+                localIni2 = localOpt;
+
+                if(fit1<fit2 && fit1<minCost){
+                    localOpt = localIni1;
+                    minCost = fit1;
+                    cout<<minCost<<endl;
+                    break;
+                }else if(fit2<fit1 && fit2<minCost){
+                    localOpt = localIni2;
+                    minCost = fit2;
+                    cout<<minCost<<endl;
+                    firstLevel.erase(second);
+                }else{
+                    localOpt = localIni;
+                }
+            }
+
+
+            /*chorm1.gene[netNum] = false;
+            decode(chorm1, nodeNum, servers);//获取服务器部署
+            int fit1 = mincostflow.multiMinCostFlow2(servers);
+            fit1 += serverCost*servers.size();
+
+            int second = graph.G[netNum][j].to;
+            if(firstLevel.find(second) != firstLevel.end()){//如果在第一层找到，证明有链路相连，可能降低代价
+
+                chorm2 = population[0];
+                chorm2.gene[second] = false;
 
                 decode(chorm2, nodeNum, servers);//获取服务器部署
                 int fit2 = mincostflow.multiMinCostFlow2(servers);
@@ -135,7 +174,8 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                     if(fit<INFMAX && fit<localCost){
                         //满足减小代价，保留更改
                         localCost = fit;
-                        cout<<fit<<endl;
+                        cout<<1<<" "<<fit<<endl;
+                        break;
                     }else{//没有减小代价或无解，返回初始状态
                         localOpt = localIni;
                     }
@@ -149,46 +189,35 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                     if(fit<INFMAX && fit<localCost){
                         //满足减小代价，保留更改
                         localCost = fit;
-                        cout<<fit<<endl;
+                        firstLevel.erase(second);
+                        cout<<2<<" "<<fit<<endl;
                     }else{//没有减小代价或无解，返回初始状态
                         localOpt = localIni;
                     }
                 }
             }else{//否则的话，此节点在树中的深度为2,存下来用于二级深度寻优
                 secondLevel[second].push_back(netNum);
-            }
+            }*/
         }
         if(breakflag)
             break;
     }
 
-    /*map<int,vector<int> >::iterator itr = secondLevel.begin();
-    for(;itr!=secondLevel.end();itr++){
-        vector<int> temp = itr->second;
-        cout<<itr->first<<" :";
-        for(int i=0;i<temp.size();i++){
-            cout<<temp[i]<<" ";
-        }
-        cout<<endl;
-    }*/
-
     decode(localOpt, geneBit, servers);
     res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
     cost = res+graph.serverCost*servers.size();
-    if(res!=INF && cost<minCost){
-        stream.clear();stream.str("");
-        stream<<m<<"\n"<<"\n";
-        for(int i=0;i<m;i++){
-            for(int j=0;j<minCostPath[i].size();j++){
-                stream<<minCostPath[i][j];
-                if(j == minCostPath[i].size()-1)
-                    stream<<"\n";
-                else
-                    stream<<" ";
-            }
+    stream.clear();stream.str("");
+    stream<<m<<"\n"<<"\n";
+    for(int i=0;i<m;i++){
+        for(int j=0;j<minCostPath[i].size();j++){
+            stream<<minCostPath[i][j];
+            if(j == minCostPath[i].size()-1)
+                stream<<"\n";
+            else
+                stream<<" ";
         }
-        result = stream.str();
     }
+    result = stream.str();
     if(breakflag){
         write_result(result.c_str(), filename);
         return;
@@ -201,10 +230,68 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     cout<<"**********************"<<endl;
 
+    //第二种寻优方案，节点向内逐步纵深
+    int nn = servers.size();
+    for(int i=0;i<nn;i++){
+    	int location = servers[i];//取出服务器位置
+    	localIni = localOpt;
+    	localOpt.gene[location] = false;
+
+    	int cn = graph.G[location].size();
+    	for(int j=0;j<cn;j++){
+            //时间控制
+            if(gettime() > 88){
+                breakflag = true;
+                break;
+            }
+
+    		int netNode = graph.G[location][j].to;
+    		localOpt.gene[netNode] = true;
+    		decode(localOpt, nodeNum, servers);//获取服务器部署
+    		int fit = mincostflow.multiMinCostFlow2(servers);
+    		fit += serverCost*servers.size();
+    		if(fit < minCost){//代价降低保留更改
+    			minCost = fit;
+    			cout<<fit<<endl;
+    		}else{//没有降低返回初始状态
+    			localOpt = localIni;
+    		}
+    	}
+    	if(breakflag)
+            break;
+    }
+
+    decode(localOpt, geneBit, servers);
+    res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
+    cost = res+graph.serverCost*servers.size();
+    stream.clear();stream.str("");
+    stream<<m<<"\n"<<"\n";
+    for(int i=0;i<m;i++){
+        for(int j=0;j<minCostPath[i].size();j++){
+            stream<<minCostPath[i][j];
+            if(j == minCostPath[i].size()-1)
+                stream<<"\n";
+            else
+                stream<<" ";
+        }
+    }
+    result = stream.str();
+    if(breakflag){
+        write_result(result.c_str(), filename);
+        return;
+    }
+    //write_result(result.c_str(), filename);
+    //return;
+
+    minCost = cost;
+    population[2] = localOpt;
+
+    cout<<"**********************"<<endl;
+
     //二级深度寻优
     //localOpt = population[0];
     //localCost = worstCost;
-    map<int,vector<int> >::iterator itr = secondLevel.begin();
+    /*map<int,vector<int> >::iterator itr = secondLevel.begin();
     Chorm temp = localOpt;
     for(;itr!=secondLevel.end();itr++){
         //时间控制
@@ -245,20 +332,18 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     decode(localOpt, geneBit, servers);
     res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
     cost = res+graph.serverCost*servers.size();
-    if(res!=INF && cost<minCost){
-        stream.clear();stream.str("");
-        stream<<m<<"\n"<<"\n";
-        for(int i=0;i<m;i++){
-            for(int j=0;j<minCostPath[i].size();j++){
-                stream<<minCostPath[i][j];
-                if(j == minCostPath[i].size()-1)
-                    stream<<"\n";
-                else
-                    stream<<" ";
-            }
+    stream.clear();stream.str("");
+    stream<<m<<"\n"<<"\n";
+    for(int i=0;i<m;i++){
+        for(int j=0;j<minCostPath[i].size();j++){
+            stream<<minCostPath[i][j];
+            if(j == minCostPath[i].size()-1)
+                stream<<"\n";
+            else
+                stream<<" ";
         }
-        result = stream.str();
     }
+    result = stream.str();
 
     if(breakflag){
         write_result(result.c_str(), filename);
@@ -267,8 +352,25 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     minCost = cost;
     population[2] = localOpt;
-    cout<<"**********************"<<endl;
+    cout<<"**********************"<<endl;*/
     //return;
+
+    //初步寻优方案，以每个消费节点为起点，寻找各自满足单个消费节点的服务器部署位置
+    /*int singleCost;     //单消费节点最优
+    int localOpt = serverCost;  //局部最优
+    int cntStay = 0;        //保留优秀解的个数
+    vector<int> serversForCnos[nodeNum];       //保留对每个消费节点的最优服务器部署方案
+    for(int i=0;i<graph.consumers.size();i++){
+        singleCost = graph.spfa2(graph.consumers[i].netNode, servers, graph.consumers[i].flowNeed);
+        serversForCnos[i] = servers;
+        //if(singleCost < serverCost){    //说明该服务器有改进空间
+
+
+        //}
+        cout<<singleCost<<"  "<<serversForCnos[i].size()<<endl;
+    }
+    return;*/
+
 
     //////////以上两级寻优主要针对中高级测试用例
     //////////初级测试用例仍主要采用遗传
@@ -346,25 +448,6 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             generateChorm(population[i], probability, chormNum, geneBit, maxServers);
         }*/
     }
-
-
-
-
-    //初步寻优方案，以每个消费节点为起点，寻找各自满足单个消费节点的服务器部署位置
-    /*int singleCost;     //单消费节点最优
-    int localOpt = serverCost;  //局部最优
-    int cntStay = 0;        //保留优秀解的个数
-    vector<int> serversForCnos[nodeNum];       //保留对每个消费节点的最优服务器部署方案
-    for(int i=0;i<graph.consumers.size();i++){
-        singleCost = graph.spfa2(graph.consumers[i].netNode, servers, graph.consumers[i].flowNeed);
-        serversForCnos[i] = servers;
-        //if(singleCost < serverCost){    //说明该服务器有改进空间
-
-
-        //}
-        cout<<singleCost<<"  "<<serversForCnos[i].size()<<endl;
-    }
-    return;*/
 
     //GA迭代
     int cntChanged = 0;         //最小代价改变次数
