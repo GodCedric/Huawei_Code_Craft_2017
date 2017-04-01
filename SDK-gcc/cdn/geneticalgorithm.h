@@ -93,7 +93,7 @@ void generateChorm2(Chorm& chorm, Chorm chorm1, int geneBit){
 }
 
 // 随机生成一个有较大概率有解的染色体
-/*void generateChorm2(Chorm& chorm, Chorm chorm1, int geneBit, vector<double>& probability){
+void generateChorm3(Chorm& chorm, Chorm chorm1, int geneBit, vector<double>& probability){
 
     //以当前最优解执行变异操作，产生新解
     chorm = chorm1;
@@ -120,7 +120,7 @@ void generateChorm2(Chorm& chorm, Chorm chorm1, int geneBit){
     for(itr=serversIndex.begin();itr!=serversIndex.end();itr++){
         chorm.gene[*itr] = true;
     }
-}*/
+}
 
 
 // 初始化种群  待修改
@@ -142,7 +142,7 @@ void fitness(vector<Chorm>& population, MCF& mincostflow, vector<int>& servers,i
         decode(population[i], nodeNum, servers);//获取服务器部署
         int fit = mincostflow.multiMinCostFlow2(servers);
         //cntMCF++;
-        if(gettime() > 88.5){
+        if(gettime() > ENDTIME){
             breakflag = true;
             break;
         }

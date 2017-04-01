@@ -21,6 +21,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     //全局结果
     vector<int> servers;                //服务器位置
+    vector<int> result_servers;
     int minCost;                        //当前最小费用
     vector<int> minCostPath[MAXPATH];   //路径
     int m = MAXPATH;                    //路径数目（初始设为最大值）
@@ -38,13 +39,11 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int consumerNum = graph.consumerNum;
     int serverCost = graph.serverCost;
 
-    //根据用例规模选择处理方案
-    int Judge;
-    if(nodeNum > 200){
-        Judge = 1;  //中高级用例一套方案
-    }else{
-        Judge = 0;  //初级用例一套方案
-    }
+    //int Judge = 0;
+    //if(nodeNum>200 && nodeNum<600){
+        //Judge = 1;
+    //}
+
 
     //图分析，得到网络节点优先概率
     bool excellentGene[MAXN];       //优秀基因
@@ -58,6 +57,30 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int cost;           //最小费用
     MCF mincostflow(graph);
     //mincostflow.createMCF(graph);
+
+
+    //测试
+    /*ostringstream stream;
+    int haha[41] = {4,8,10,11,15,17,25,28,29,34,35,42,44,57,62,63,67,70,75,76,80,85,90,102,103,109,118,119,120,122,126,130,135,139,141,142,146,147,149,153,154};
+    vector<int> servers(haha,haha+41);
+
+    res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
+    cost = res+graph.serverCost*servers.size();
+    stream.clear();stream.str("");
+    stream<<m<<"\n"<<"\n";
+    for(int i=0;i<m;i++){
+    	for(int j=0;j<minCostPath[i].size();j++){
+        stream<<minCostPath[i][j];
+        if(j == minCostPath[i].size()-1)
+        	stream<<"\n";
+        else
+        	stream<<" ";
+        }
+    }
+    result = stream.str();
+    cout<<"***********"<<cost<<endl;
+    write_result(result.c_str(), filename);
+    return;*/
 
     //////////GA搜索最优解
     //GA参数
@@ -111,7 +134,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         for(int j=0;j<nn;j++){
 
             //时间控制
-            if(gettime() > 88){
+            if(gettime() > ENDTIME){
                 breakflag = true;
                 break;
             }
@@ -206,6 +229,8 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     decode(localOpt, geneBit, servers);
     res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
     cost = res+graph.serverCost*servers.size();
+    result_servers = servers;
+    cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<cost<<endl;
     stream.clear();stream.str("");
     stream<<m<<"\n"<<"\n";
     for(int i=0;i<m;i++){
@@ -236,14 +261,18 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     	int location = servers[i];//取出服务器位置
     	localIni = localOpt;
     	localOpt.gene[location] = false;
+    	localIni1 = localOpt;
 
     	int cn = graph.G[location].size();
+    	bool changeflag = false;
     	for(int j=0;j<cn;j++){
             //时间控制
-            if(gettime() > 88){
+            if(gettime() > ENDTIME){
                 breakflag = true;
                 break;
             }
+
+            localOpt = localIni1;
 
     		int netNode = graph.G[location][j].to;
     		localOpt.gene[netNode] = true;
@@ -251,11 +280,16 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     		int fit = mincostflow.multiMinCostFlow2(servers);
     		fit += serverCost*servers.size();
     		if(fit < minCost){//代价降低保留更改
+    			changeflag = true;
+    			localIni1 = localOpt;
     			minCost = fit;
     			cout<<fit<<endl;
     		}else{//没有降低返回初始状态
-    			localOpt = localIni;
+    			localOpt = localIni1;
     		}
+    	}
+    	if(!changeflag){
+            localOpt = localIni;
     	}
     	if(breakflag)
             break;
@@ -264,6 +298,10 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     decode(localOpt, geneBit, servers);
     res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
     cost = res+graph.serverCost*servers.size();
+    result_servers = servers;
+    cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<cost<<endl;
+
+
     stream.clear();stream.str("");
     stream<<m<<"\n"<<"\n";
     for(int i=0;i<m;i++){
@@ -280,6 +318,10 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         write_result(result.c_str(), filename);
         return;
     }
+    //if(Judge == 1){
+       // write_result(result.c_str(), filename);
+        //return;
+    //}
     //write_result(result.c_str(), filename);
     //return;
 
@@ -377,21 +419,24 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //////////
 
 
-    if(Judge == 1){
+    for(int i=3;i<chormNum;i++){
+            generateChorm3(population[i], localOpt, geneBit, probability);
+    }
+    /*if(Judge == 1){
         //剩下的随机产生
         for(int i=3;i<chormNum;i++){
-            generateChorm2(population[i], localOpt, geneBit);
+            generateChorm3(population[i], localOpt, geneBit, probability);
             //randomChorm(population[i],chormNum,geneBit,maxServers);
             //generateChorm(population[i], probability, chormNum, geneBit, maxServers);
         }
     }else{
         for(int i=3;i<chormNum;i++){
-            generateChorm2(population[i], localOpt, geneBit);
+            generateChorm3(population[i], localOpt, geneBit, probability);
             //randomChorm(population[i],chormNum,geneBit,maxServers);
             //generateChorm(population[i], probability, chormNum, geneBit, maxServers);
         }
         //将与消费节点最近的网络节点生成一个染色体
-        /*int initChormNum = 1;
+        int initChormNum = 1;
         for(int i=0;i<graph.consumerNum;i++){
             int netNum = graph.consumers[i].netNode;
             int nn = graph.G[netNum].size();
@@ -403,10 +448,10 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
             }
             if(initChormNum >= 80)
                 break;
-        }*/
+        }
 
         //0和1号染色体随机交配产生100条染色体
-        /*int lengthGene = geneBit / 20;
+        int lengthGene = geneBit / 20;
         for(int i=2;i<chormNum-1;){
             population[i] = population[0];
             population[i+1] = population[1];
@@ -415,11 +460,11 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                 swap(population[i].gene[j],population[i+1].gene[j]);
             }
             i += 2;
-        }*/
+        }
 
         //将优良中基因与初始最差基因交配产生一批基因
         //先将3个基因放进去
-        /*for(int i=0;i<geneBit;i++){
+        for(int i=0;i<geneBit;i++){
             population[3].gene[i] = excellentGene[i];
             population[4].gene[i] = goodGene[i];
             population[5].gene[i] = mediumGene[i];
@@ -446,8 +491,8 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         for(int i=initChormNum;i<chormNum;i++){
             //randomChorm(population[i],chormNum,geneBit,maxServers);
             generateChorm(population[i], probability, chormNum, geneBit, maxServers);
-        }*/
-    }
+        }
+    }*/
 
     //GA迭代
     int cntChanged = 0;         //最小代价改变次数
@@ -473,9 +518,10 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         //更新当前最优解
         if(fitAll[0].first < minCost){
             //cout<<"Hello!"<<"  "<<minCost<<endl;
-            decode(population[fitAll[0].second], geneBit, servers);
+            decode(new_population[0], geneBit, servers);
             res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
             cost = res+graph.serverCost*servers.size();
+            result_servers = servers;
             if(res!=INF && cost<minCost){
                 stream.clear();
                 stream.str("");
@@ -505,7 +551,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers, nProtect);
 
         //变异
-        mutation(mulationRate, population, chormNum, geneBit);
+        //mutation(mulationRate, population, chormNum, geneBit);
 
         //收敛后退出
         //cout<<cntMinCost<<endl;
@@ -528,7 +574,12 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     cout<<10000 - generation<<endl;
     //cout<<cntMCF<<endl;
 
-    //string result = stream.str();
+    for(int i=0;i<result_servers.size();i++){
+        cout<<result_servers[i]<<"  ";
+    }
+    cout<<endl;
+
+    result = stream.str();
     //cout<<result<<endl;
     const char* topo_file = result.c_str();
 
