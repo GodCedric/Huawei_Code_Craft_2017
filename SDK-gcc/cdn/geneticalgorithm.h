@@ -10,7 +10,7 @@ struct Chorm{
     int fit = 0;                                //适应值
 
     Chorm(int f):fit(f){
-        for(int i=0;i<MAXN;i++){
+        for(int i=0;i<MAXN;++i){
             gene[i] = false;
         }
     }
@@ -18,7 +18,7 @@ struct Chorm{
 
 // 编码：把一个服务器部署方案转换为染色体
 void encode(vector<int>& servers, Chorm& chorm){
-    for(int i=0;i<servers.size();i++){
+    for(int i=0;i<servers.size();++i){
         chorm.gene[servers[i]] = true;
     }
 }
@@ -26,7 +26,7 @@ void encode(vector<int>& servers, Chorm& chorm){
 // 解码：根据基因序列产生服务器部署位置
 void decode(Chorm& chorm, int nodeNum, vector<int>& servers){
     servers.clear();
-    for(int i=0;i<nodeNum;i++){
+    for(int i=0;i<nodeNum;++i){
         if(chorm.gene[i]){
             servers.push_back(i);
         }
@@ -36,13 +36,13 @@ void decode(Chorm& chorm, int nodeNum, vector<int>& servers){
 // 完全随机产生染色体
 void randomChorm(Chorm& chorm, int chormNum, int geneBit, int maxServers){
     //服务器清空置零
-    for(int m=0;m<geneBit;m++){
+    for(int m=0;m<geneBit;++m){
         chorm.gene[m] = false;
     }
 
     int numservers = rand() % (maxServers-1) +1;   //随机生成服务器数量，最多maxServers个
     //随机分布服务器
-    for(int j=0;j<numservers;j++){
+    for(int j=0;j<numservers;++j){
         int index = rand() % geneBit;
         chorm.gene[index] = true;
     }
@@ -51,7 +51,7 @@ void randomChorm(Chorm& chorm, int chormNum, int geneBit, int maxServers){
 // 随机生成一个有较大概率有解的染色体
 void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int geneBit, int maxServers){
     //服务器清空置零
-    for(int m=0;m<geneBit;m++){
+    for(int m=0;m<geneBit;++m){
         chorm.gene[m] = false;
     }
 
@@ -64,7 +64,7 @@ void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int 
     while(serversIndex.size() < numservers){
         double randomrate = rand() % 100000 / 100000.0;
         double tempsum = 0;
-        for(int i=0;i<probability.size();i++){
+        for(int i=0;i<probability.size();++i){
             tempsum += probability[i];
             if(tempsum >= randomrate){
                 serversIndex.insert(i);
@@ -75,7 +75,7 @@ void generateChorm(Chorm& chorm, vector<double>& probability, int chormNum, int 
 
     //获取染色体
     set<int>::iterator itr;
-    for(itr=serversIndex.begin();itr!=serversIndex.end();itr++){
+    for(itr=serversIndex.begin();itr!=serversIndex.end();++itr){
         chorm.gene[*itr] = true;
     }
 }
@@ -106,7 +106,7 @@ void generateChorm3(Chorm& chorm, Chorm chorm1, int geneBit, vector<double>& pro
     while(serversIndex.size() < n){
         double randomrate = rand() % 100000 / 100000.0;
         double tempsum = 0;
-        for(int i=0;i<probability.size();i++){
+        for(int i=0;i<probability.size();++i){
             tempsum += probability[i];
             if(tempsum >= randomrate){
                 serversIndex.insert(i);
@@ -117,7 +117,7 @@ void generateChorm3(Chorm& chorm, Chorm chorm1, int geneBit, vector<double>& pro
 
     //获取染色体
     set<int>::iterator itr;
-    for(itr=serversIndex.begin();itr!=serversIndex.end();itr++){
+    for(itr=serversIndex.begin();itr!=serversIndex.end();++itr){
         chorm.gene[*itr] = true;
     }
 }
@@ -138,7 +138,7 @@ void fitness(vector<Chorm>& population, MCF& mincostflow, vector<int>& servers,i
     //vector<int> servers;                //服务器位置
     int fit;                            //适应度
     //double timelimit;                   //程序计时
-    for(int i=nProtect;i<population.size();i++){
+    for(int i=nProtect;i<population.size();++i){
         decode(population[i], nodeNum, servers);//获取服务器部署
         int fit = mincostflow.multiMinCostFlow2(servers);
         //cntMCF++;
@@ -163,7 +163,7 @@ void chormSelection(vector<Chorm>& population, vector<Chorm>& new_population, ve
     //根据各染色体的适应度排序，适应度高的从从前到后放到new_population里面，适应度为-1的舍弃，并补充新的染色体到种群
     sort(fitAll.begin(),fitAll.end());
     //将有解的染色体放到new_population里面
-    for(int i=0;i<chormNum-1;i++){
+    for(int i=0;i<chormNum-1;++i){
         if(fitAll[i].first!=INFMAX && fitAll[i].first!=fitAll[i+1].first){
             new_population[cntValidChorm++] = population[fitAll[i].second];
         }
@@ -185,7 +185,7 @@ void crossover(double crossoverRate,
 
     //不满足10个解的继续寻找，满足的解保留，不满足的更新
     if(cntValidChorm < m){
-        for(int i=cntValidChorm;i<chormNum;i++){
+        for(int i=cntValidChorm;i<chormNum;++i){
             generateChorm2(new_population[i], new_population[0], geneBit);
             //generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
             //randomChorm(new_population[i], chormNum, geneBit, maxServers);
@@ -197,22 +197,22 @@ void crossover(double crossoverRate,
         int cnt = 0;
         int a = 0;
         int b = 0;
-        for(int i=0;i<m;i++){
-            for(int j=i+1;j<m;j++){
+        for(int i=0;i<m;++i){
+            for(int j=i+1;j<m;++j){
                 cnt++;
                 a = chormNum-x-cnt;
-                for(int k1=0;k1<geneBit;k1++){
+                for(int k1=0;k1<geneBit;++k1){
                     new_population[a].gene[k1] = new_population[i].gene[k1];
                 }
                 cnt++;
                 b = chormNum-x-cnt;
-                for(int k1=0;k1<geneBit;k1++){
+                for(int k1=0;k1<geneBit;++k1){
                     new_population[b].gene[k1] = new_population[j].gene[k1];
                 }
                 //交叉，随机生成交叉起始点
                 int start = rand() / (geneBit-bitcnt);
                 //开始交叉
-                for(int mm=start;mm<bitcnt;mm++){
+                for(int mm=start;mm<bitcnt;++mm){
                     swap(new_population[a].gene[mm],new_population[b].gene[mm]);
                 }
             }
@@ -226,7 +226,7 @@ void crossover(double crossoverRate,
                 //交叉，随机生成交叉起始点
                 int start = rand() % (geneBit-bitcnt);
                 //开始交叉
-                for(int m=start;m<bitcnt;m++){
+                for(int m=start;m<bitcnt;++m){
                     swap(new_population[i].gene[m],new_population[i+1].gene[m]);
                 }
             //}
@@ -234,7 +234,7 @@ void crossover(double crossoverRate,
             i += 2;
         }
         //剩下的无解的染色体仍然按照随机生成，并且至少保证留出来20个染色体为随机生成，补充种群多样性
-        for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;i++){
+        for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;++i){
             generateChorm2(new_population[i], new_population[0], geneBit);
             //generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
             //randomChorm(new_population[i], chormNum, geneBit, maxServers);

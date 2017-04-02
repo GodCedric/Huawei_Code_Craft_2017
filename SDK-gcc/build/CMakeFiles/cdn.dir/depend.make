@@ -10,6 +10,7 @@ CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.cpp
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
+CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/getresult.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/gettime.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/graph.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib/lib_io.h

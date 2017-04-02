@@ -31,6 +31,8 @@ geneticalgorithm.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/geneticalgorithm.h
 analyzegraph.h
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/analyzegraph.h
+getresult.h
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/getresult.h
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/deploy.h
 lib_io.h
@@ -41,6 +43,8 @@ set
 -
 algorithm
 -
+
+/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/getresult.h
 
 /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/gettime.h
 sys/timeb.h
