@@ -8,6 +8,7 @@
 #include "mincostflow.h"
 #include "geneticalgorithm.h"
 #include "analyzegraph.h"
+#include "getresult.h"
 
 using namespace std;
 
@@ -22,6 +23,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     //全局结果
     vector<int> servers;                //服务器位置
     vector<int> result_servers;
+    vector<int> optimal_servers;
     int minCost;                        //当前最小费用
     vector<int> minCostPath[MAXPATH];   //路径
     int m = MAXPATH;                    //路径数目（初始设为最大值）
@@ -30,20 +32,9 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     // 创建图
     Graph graph;
     graph.createGraph(topo);
-    //int a=0,b=0,c=0;
-    //graph.spfa(0,a,b,c);
-    //return;
-
-    //cout<<graph.G.size()<<endl;
     int nodeNum = graph.nodeNum;
     int consumerNum = graph.consumerNum;
     int serverCost = graph.serverCost;
-
-    //int Judge = 0;
-    //if(nodeNum>200 && nodeNum<600){
-        //Judge = 1;
-    //}
-
 
     //图分析，得到网络节点优先概率
     bool excellentGene[MAXN];       //优秀基因
@@ -56,31 +47,6 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int res;            //最小费用结果
     int cost;           //最小费用
     MCF mincostflow(graph);
-    //mincostflow.createMCF(graph);
-
-
-    //测试
-    /*ostringstream stream;
-    int haha[41] = {4,8,10,11,15,17,25,28,29,34,35,42,44,57,62,63,67,70,75,76,80,85,90,102,103,109,118,119,120,122,126,130,135,139,141,142,146,147,149,153,154};
-    vector<int> servers(haha,haha+41);
-
-    res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
-    cost = res+graph.serverCost*servers.size();
-    stream.clear();stream.str("");
-    stream<<m<<"\n"<<"\n";
-    for(int i=0;i<m;i++){
-    	for(int j=0;j<minCostPath[i].size();j++){
-        stream<<minCostPath[i][j];
-        if(j == minCostPath[i].size()-1)
-        	stream<<"\n";
-        else
-        	stream<<" ";
-        }
-    }
-    result = stream.str();
-    cout<<"***********"<<cost<<endl;
-    write_result(result.c_str(), filename);
-    return;*/
 
     //////////GA搜索最优解
     //GA参数
@@ -227,30 +193,15 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     }
 
     decode(localOpt, geneBit, servers);
-    res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
-    cost = res+graph.serverCost*servers.size();
-    result_servers = servers;
-    cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<cost<<endl;
-    stream.clear();stream.str("");
-    stream<<m<<"\n"<<"\n";
-    for(int i=0;i<m;i++){
-        for(int j=0;j<minCostPath[i].size();j++){
-            stream<<minCostPath[i][j];
-            if(j == minCostPath[i].size()-1)
-                stream<<"\n";
-            else
-                stream<<" ";
-        }
-    }
-    result = stream.str();
+    optimal_servers = servers;
     if(breakflag){
+        getresult(mincostflow, optimal_servers, serverCost, minCostPath, m, stream);
+        result = stream.str();
         write_result(result.c_str(), filename);
         return;
     }
-    //write_result(result.c_str(), filename);
-    //return;
 
-    minCost = cost;
+    //minCost = cost;
     population[1] = localOpt;
 
     cout<<"**********************"<<endl;
@@ -296,36 +247,15 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     }
 
     decode(localOpt, geneBit, servers);
-    res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
-    cost = res+graph.serverCost*servers.size();
-    result_servers = servers;
-    cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<cost<<endl;
-
-
-    stream.clear();stream.str("");
-    stream<<m<<"\n"<<"\n";
-    for(int i=0;i<m;i++){
-        for(int j=0;j<minCostPath[i].size();j++){
-            stream<<minCostPath[i][j];
-            if(j == minCostPath[i].size()-1)
-                stream<<"\n";
-            else
-                stream<<" ";
-        }
-    }
-    result = stream.str();
+    optimal_servers = servers;
     if(breakflag){
+        getresult(mincostflow, optimal_servers, serverCost, minCostPath, m, stream);
+        result = stream.str();
         write_result(result.c_str(), filename);
         return;
     }
-    //if(Judge == 1){
-       // write_result(result.c_str(), filename);
-        //return;
-    //}
-    //write_result(result.c_str(), filename);
-    //return;
 
-    minCost = cost;
+    //minCost = cost;
     population[2] = localOpt;
 
     cout<<"**********************"<<endl;
@@ -500,13 +430,10 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int cntValidChorm = 0;
     int tempMinCost = minCost;
     int cntMinCost = 0;
-    //minCost = worstCost;
-    //int cntMCF = 0;
     while(generation--){
-        //cout<<generation<<endl;
 
         //以最小费用流算法为适度函数，求各染色体适应度
-        fitness(population, mincostflow, servers, geneBit, graph.serverCost, fitAll, nProtect, breakflag);
+        fitness(population, mincostflow, servers, geneBit, serverCost, fitAll, nProtect, breakflag);
         if(breakflag)
             break;
 
@@ -517,35 +444,11 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
         //更新当前最优解
         if(fitAll[0].first < minCost){
-            //cout<<"Hello!"<<"  "<<minCost<<endl;
             decode(new_population[0], geneBit, servers);
-            res = mincostflow.multiMinCostFlow(servers,minCostPath,m);
-            cost = res+graph.serverCost*servers.size();
-            result_servers = servers;
-            if(res!=INF && cost<minCost){
-                stream.clear();
-                stream.str("");
-                stream<<m<<"\n"<<"\n";
-                for(int i=0;i<m;i++){
-                    for(int j=0;j<minCostPath[i].size();j++){
-                        stream<<minCostPath[i][j];
-                        if(j == minCostPath[i].size()-1)
-                            stream<<"\n";
-                        else
-                            stream<<" ";
-                    }
-                }
-                //stream<<"\n"<<cost<<"\n";
-                result = stream.str();
-				//const char* topo_file = result.c_str();
-				//write_result(topo_file, filename);
-                //cout<<result<<endl;
-            }
-            minCost = cost;
-            cntChanged++;
+            optimal_servers = servers;
+            minCost = fitAll[0].first;
             cout<<minCost<<endl;
         }
-        //cout<<cntValidChorm<<endl;
 
         //交叉
         crossover(crossoverRate, population, new_population, cntValidChorm, probability, chormNum, geneBit, maxServers, nProtect);
@@ -570,20 +473,13 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
         //break;
 
     }
-    //cout<<generation<<endl;
+
     cout<<10000 - generation<<endl;
-    //cout<<cntMCF<<endl;
 
-    for(int i=0;i<result_servers.size();i++){
-        cout<<result_servers[i]<<"  ";
-    }
-    cout<<endl;
-
+    getresult(mincostflow, optimal_servers, serverCost, minCostPath, m, stream);
     result = stream.str();
-    //cout<<result<<endl;
-    const char* topo_file = result.c_str();
+    write_result(result.c_str(), filename);
 
-	// 直接调用输出文件的方法输出到指定文件中(ps请注意格式的正确性，如果有解，第一行只有一个数据；第二行为空；第三行开始才是具体的数据，数据之间用一个空格分隔开)
-	write_result(topo_file, filename);
+    return;
 
 }

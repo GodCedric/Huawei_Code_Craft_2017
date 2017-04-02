@@ -11,7 +11,7 @@
 using namespace std;
 
 //颜色
-enum Color{WHITE,GRAY,BLACK};
+enum Color{WHITE,GRAY};
 
 //残存网络边
 struct Edge_MCF
@@ -238,13 +238,13 @@ public:
          int recordFlow = INF;//记录流量
 
          //初始化节点流量
-        for(int i=0;i<nodeNum;i++){
+        /*for(int i=0;i<nodeNum;i++){
             for(int j=0;j<G1[i].size();j++){
                 if(G1[i][j].flow >= 0){
                     nodeFlow[i] += G1[i][j].flow;
                 }
             }
-        }
+        }*/
 
         for(int i=0;i<G1[superServer].size();i++){
         	Edge_MCF& e = G1[superServer][i];
