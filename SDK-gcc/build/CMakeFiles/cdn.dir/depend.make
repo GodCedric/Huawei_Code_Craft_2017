@@ -15,6 +15,7 @@ CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/graph.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/lib/lib_io.h
 CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/mincostflow.h
+CMakeFiles/cdn.dir/deploy.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/myqueue.h
 
 CMakeFiles/cdn.dir/io.cpp.o: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/cdn/io.cpp
 

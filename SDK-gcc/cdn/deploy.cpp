@@ -53,16 +53,16 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int generation = 10000;                     //设置迭代次数
     int geneBit = nodeNum;                //基因编码位数
     int maxServers = consumerNum;         //服务器最大配置数目
-    int chormNum = 100;                         //种群内染色体数量,先定个100条吧
+    int chormNum = 70;                         //种群内染色体数量,先定个100条吧
     const double crossoverRate = 0.7;                 //交叉概率
     const double mulationRate = 0.15;                  //突变概率
 
     //GA成员
     Chorm defaultChorm(0);
-    vector<Chorm> population(100,defaultChorm);   //种群
-    vector<Chorm> new_population(100,defaultChorm);          //更新的种群
+    vector<Chorm> population(70,defaultChorm);   //种群
+    vector<Chorm> new_population(70,defaultChorm);          //更新的种群
     srand((unsigned)time(NULL));                //随机数种子
-    vector<pair<int,int> > fitAll(100,{0,0});          //适应度,first为适应度，second为对应坐标
+    vector<pair<int,int> > fitAll(70,{0,0});          //适应度,first为适应度，second为对应坐标
 
     //初始最差解：每个消费节点相连的网络节点放个服务器
     set<int> firstLevel;
@@ -112,6 +112,16 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                 fit1 = mincostflow.multiMinCostFlow2(servers);
                 fit1 += serverCost*servers.size();
                 localIni1 = localOpt;
+
+                /*if(fit1<minCost){
+                    localOpt = localIni1;
+                    minCost = fit1;
+                    cout<<minCost<<endl;
+                    break;
+                }else{
+                    localOpt = localIni;
+                }*/
+
 
                 localOpt = localIni;
                 localOpt.gene[second] = false;

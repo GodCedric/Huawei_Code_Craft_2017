@@ -98,7 +98,7 @@ void generateChorm3(Chorm& chorm, Chorm chorm1, int geneBit, vector<double>& pro
     //以当前最优解执行变异操作，产生新解
     chorm = chorm1;
     //int n = rand() % 10; //变异个数
-    int n = 5;
+    int n = 10;
 
     set<int> serversIndex;
 

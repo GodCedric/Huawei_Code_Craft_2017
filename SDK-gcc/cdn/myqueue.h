@@ -54,10 +54,10 @@ void Queue<T, size>::enqueue(const T& elem)
 template<typename T, int size>
 T Queue<T, size>::dequeue()
 {
-    if(is_empty()){
-        cout << "Queue empty." << endl;
-        exit(EXIT_FAILURE);
-    }
+    //if(is_empty()){
+        //cout << "Queue empty." << endl;
+        //exit(EXIT_FAILURE);
+    //}
 
     T tmp;
 

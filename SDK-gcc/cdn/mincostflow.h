@@ -35,12 +35,14 @@ private:
     int preve[MAXN];                //最短路中的父边编号
     int addflow[MAXN];              //可增加量
     queue<int> q;                   //队列
-    Queue<int,1000> myq;//自己写的队列
+    Queue<int,2000> myq;//自己写的队列
 
     vector<int> consumerNetNodes;   //消费节点所连网络节点
     int f_all;                      //消费节点容量需求和
     int superServer;//超级源
     int superConsumerNetNode;//超级汇
+
+    int recordFlow[200000];  //记录初始流量
 
     Color color[MAXN];
     int nodeFlow[MAXN];//记录节点流量
@@ -137,12 +139,13 @@ public:
              }
              dist[superServer] = 0;
              addflow[superServer] = INF;
-             q.push(superServer);
+             myq.enqueue(superServer);
              inq[superServer] = true;
-             while (!q.empty())
+             while (!myq.is_empty())
              {
-                 int v = q.front();
-                 q.pop();
+                 //int v = q.front();
+                 //q.pop();
+                 int v = myq.dequeue();
                  inq[v] = false;
                  int sz = G1[v].size();
                  for (int i = 0; i<sz; ++i)
@@ -153,9 +156,9 @@ public:
                          dist[e.to] = dist[v] + e.cost;
                          prevv[e.to] = v;//更新父结点
                          preve[e.to] = i;//更新父边编号
-                         addflow[e.to] = min(addflow[v], e.cap-e.flow);
+
                          if(!inq[e.to]){
-                            q.push(e.to);
+                            myq.enqueue(e.to);
                             inq[e.to] = true;
                          }
 
@@ -169,7 +172,13 @@ public:
              }
 
              //求取最短路径最小流量增加量
-             int d = addflow[superConsumerNetNode];
+             int d = INF;
+             for (int x = superConsumerNetNode; x != superServer; x = prevv[x])
+             {
+                 Edge_MCF &e = G1[prevv[x]][preve[x]];
+                 d = min(d,e.cap-e.flow);
+
+             }
 
              //更新路径及费用
              f -= d;
@@ -292,10 +301,8 @@ public:
                          dist[e.to] = dist[v] + e.cost;
                          prevv[e.to] = v;//更新父结点
                          preve[e.to] = i;//更新父边编号
-                         addflow[e.to] = min(addflow[v], e.cap-e.flow);
+
                          if(!inq[e.to]){
-                            //q.push(e.to);
-                        	//int to = e.to;
                             myq.enqueue(e.to);
                             inq[e.to] = true;
                          }
@@ -310,8 +317,13 @@ public:
              }
 
              //求取最短路径最小流量增加量
-             int d = addflow[superConsumerNetNode];
+             int d = INF;
+             for (int x = superConsumerNetNode; x != superServer; x = prevv[x])
+             {
+                 Edge_MCF &e = G1[prevv[x]][preve[x]];
+                 d = min(d,e.cap-e.flow);
 
+             }
 
              //更新路径及费用
              f -= d;
