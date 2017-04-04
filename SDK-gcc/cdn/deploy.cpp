@@ -81,7 +81,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     cout<<endl;
     result = stream.str();
 
-    //初步寻优，第一层服务器有相连的可能降低代价
+    //第一次缩减代价，第一层服务器有相连的可能降低代价
     bool breakflag = false;
     Chorm localOpt = population[0];
     Chorm localIni = localOpt;
@@ -163,7 +163,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     cout<<"**********************"<<endl;
 
-    //第二种寻优方案，节点向内逐步纵深
+    //第二次缩减代价，节点向内逐步纵深
     int nn = servers.size();
     for(int i=0;i<nn;++i){
     	int location = servers[i];//取出服务器位置
@@ -217,8 +217,48 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     cout<<"**********************"<<endl;
 
+    //第三次缩减代价，服务器规模缩减，以路径代价代替服务器代价
+    nn = servers.size();
+    for(int i=0;i<nn;++i){
+    	//时间控制
+    	if(gettime() > ENDTIME){
+                breakflag = true;
+                break;
+        }
 
-    for(int i=3;i<chormNum;++i){
+    	int location = servers[i];//取出服务器位置
+    	localIni = localOpt;
+    	localOpt.gene[location] = false;
+
+    	decode(localOpt, nodeNum, servers);//获取服务器部署
+        int fit = mincostflow.multiMinCostFlow2(servers);
+        fit += serverCost*servers.size();
+        if(fit < minCost){//代价降低保留更改
+            localIni = localOpt;
+            minCost = fit;
+            cout<<fit<<endl;
+        }else{//没有降低返回初始状态
+            localOpt = localIni;
+        }
+
+    	if(breakflag)
+            break;
+    }
+
+    decode(localOpt, geneBit, servers);
+    optimal_servers = servers;
+    if(breakflag){
+        getresult(mincostflow, optimal_servers, serverCost, minCostPath, m, stream);
+        result = stream.str();
+        write_result(result.c_str(), filename);
+        return;
+    }
+
+    population[3] = localOpt;
+
+
+    //剩余染色体按随机变异生成
+    for(int i=4;i<chormNum;++i){
             generateChorm3(population[i], localOpt, geneBit, probability);
     }
 
