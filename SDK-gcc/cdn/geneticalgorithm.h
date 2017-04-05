@@ -176,9 +176,9 @@ void crossover(double crossoverRate,
                int cntValidChorm, vector<double>& probability,
                int chormNum, int geneBit, int maxServers, int nProtect){
 
-    int m = 5;  //保护几条染色体
-    int n = 10;  //有几条交叉感染的染色体
-    int x = 20;  //留出10条染色体的位置随机生成，保证种群多样性
+    int m = 6;  //保护几条染色体
+    int n = 15;  //有几条交叉感染的染色体
+    int x = 25;  //留出10条染色体的位置随机生成，保证种群多样性
 
     //交叉位数，有50%的染色体基因发生交叉
     const int bitcnt = geneBit / 2;

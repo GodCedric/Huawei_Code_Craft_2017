@@ -36,6 +36,14 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int consumerNum = graph.consumerNum;
     int serverCost = graph.serverCost;
 
+    //根据图规模选择策略
+    bool caseflag;
+    if(nodeNum > 600){
+        caseflag = false;//高级图耗掉时间
+    }else{
+        caseflag = true;//初中级图判断收敛，提前退出
+    }
+
     //图分析，得到网络节点优先概率
     bool excellentGene[MAXN];       //优秀基因
     bool goodGene[MAXN];            //良好基因
@@ -53,16 +61,16 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int generation = 10000;                     //设置迭代次数
     int geneBit = nodeNum;                //基因编码位数
     int maxServers = consumerNum;         //服务器最大配置数目
-    int chormNum = 70;                         //种群内染色体数量,先定个100条吧
+    int chormNum = 100;                         //种群内染色体数量,先定个100条吧
     const double crossoverRate = 0.7;                 //交叉概率
     const double mulationRate = 0.15;                  //突变概率
 
     //GA成员
     Chorm defaultChorm(0);
-    vector<Chorm> population(70,defaultChorm);   //种群
-    vector<Chorm> new_population(70,defaultChorm);          //更新的种群
+    vector<Chorm> population(100,defaultChorm);   //种群
+    vector<Chorm> new_population(100,defaultChorm);          //更新的种群
     srand((unsigned)time(NULL));                //随机数种子
-    vector<pair<int,int> > fitAll(70,{0,0});          //适应度,first为适应度，second为对应坐标
+    vector<pair<int,int> > fitAll(100,{0,0});          //适应度,first为适应度，second为对应坐标
 
     //初始最差解：每个消费节点相连的网络节点放个服务器
     set<int> firstLevel;
@@ -113,16 +121,6 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                 fit1 += serverCost*servers.size();
                 localIni1 = localOpt;
 
-                /*if(fit1<minCost){
-                    localOpt = localIni1;
-                    minCost = fit1;
-                    cout<<minCost<<endl;
-                    break;
-                }else{
-                    localOpt = localIni;
-                }*/
-
-
                 localOpt = localIni;
                 localOpt.gene[second] = false;
                 decode(localOpt, nodeNum, servers);//获取服务器部署
@@ -163,8 +161,95 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     cout<<"**********************"<<endl;
 
+    int nn;
+
+    //第三次缩减代价，服务器规模缩减，以路径代价代替服务器代价
+    if(!caseflag){
+        nn = servers.size();
+        for(int i=0;i<nn;++i){
+            //时间控制
+            if(gettime() > ENDTIME){
+                breakflag = true;
+                break;
+        }
+
+    	int location = servers[i];//取出服务器位置
+    	localIni = localOpt;
+    	localOpt.gene[location] = false;
+
+    	decode(localOpt, nodeNum, servers);//获取服务器部署
+        int fit = mincostflow.multiMinCostFlow2(servers);
+        fit += serverCost*servers.size();
+        if(fit < minCost){//代价降低保留更改
+            localIni = localOpt;
+            minCost = fit;
+            cout<<fit<<endl;
+        }else{//没有降低返回初始状态
+            localOpt = localIni;
+        }
+
+    	if(breakflag)
+            break;
+        }
+
+        decode(localOpt, geneBit, servers);
+        optimal_servers = servers;
+        if(breakflag){
+            getresult(mincostflow, optimal_servers, serverCost, minCostPath, m, stream);
+            result = stream.str();
+            write_result(result.c_str(), filename);
+            return;
+        }
+
+        population[3] = localOpt;
+
+        cout<<"************************"<<endl;
+
+
+        //第三次缩减代价，服务器规模缩减，以路径代价代替服务器代价
+        nn = servers.size();
+        for(int i=0;i<nn;++i){
+            //时间控制
+            if(gettime() > ENDTIME){
+                breakflag = true;
+                break;
+            }
+
+        int location = servers[i];//取出服务器位置
+    	localIni = localOpt;
+    	localOpt.gene[location] = false;
+
+    	decode(localOpt, nodeNum, servers);//获取服务器部署
+        int fit = mincostflow.multiMinCostFlow2(servers);
+        fit += serverCost*servers.size();
+        if(fit < minCost){//代价降低保留更改
+            localIni = localOpt;
+            minCost = fit;
+            cout<<fit<<endl;
+        }else{//没有降低返回初始状态
+            localOpt = localIni;
+        }
+
+    	if(breakflag)
+            break;
+        }
+
+        decode(localOpt, geneBit, servers);
+        optimal_servers = servers;
+        if(breakflag){
+            getresult(mincostflow, optimal_servers, serverCost, minCostPath, m, stream);
+            result = stream.str();
+            write_result(result.c_str(), filename);
+            return;
+        }
+
+        population[4] = localOpt;
+
+        cout<<"************************"<<endl;
+    }
+
     //第二次缩减代价，节点向内逐步纵深
-    int nn = servers.size();
+    nn = servers.size();
     for(int i=0;i<nn;++i){
     	int location = servers[i];//取出服务器位置
     	localIni = localOpt;
@@ -217,48 +302,11 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     cout<<"**********************"<<endl;
 
-    //第三次缩减代价，服务器规模缩减，以路径代价代替服务器代价
-    nn = servers.size();
-    for(int i=0;i<nn;++i){
-    	//时间控制
-    	if(gettime() > ENDTIME){
-                breakflag = true;
-                break;
-        }
 
-    	int location = servers[i];//取出服务器位置
-    	localIni = localOpt;
-    	localOpt.gene[location] = false;
-
-    	decode(localOpt, nodeNum, servers);//获取服务器部署
-        int fit = mincostflow.multiMinCostFlow2(servers);
-        fit += serverCost*servers.size();
-        if(fit < minCost){//代价降低保留更改
-            localIni = localOpt;
-            minCost = fit;
-            cout<<fit<<endl;
-        }else{//没有降低返回初始状态
-            localOpt = localIni;
-        }
-
-    	if(breakflag)
-            break;
-    }
-
-    decode(localOpt, geneBit, servers);
-    optimal_servers = servers;
-    if(breakflag){
-        getresult(mincostflow, optimal_servers, serverCost, minCostPath, m, stream);
-        result = stream.str();
-        write_result(result.c_str(), filename);
-        return;
-    }
-
-    population[3] = localOpt;
 
 
     //剩余染色体按随机变异生成
-    for(int i=4;i<chormNum;++i){
+    for(int i=3;i<chormNum;++i){
             generateChorm3(population[i], localOpt, geneBit, probability);
     }
 

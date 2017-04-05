@@ -29,6 +29,7 @@ private:
     int consumerNum;                //消费节点数目
 
     vector<Edge_MCF> G[MAXN];       //残存网络邻接表
+    int res,cost;
     bool inq[MAXN];                  //节点入队标志位
     int dist[MAXN];                 //最短距离
     int prevv[MAXN];                //最短路中的父结点
@@ -90,6 +91,12 @@ public:
         G[to].push_back(Edge_MCF( from, cap, 0, cost, sz1+1));
         G[from].push_back(Edge_MCF( to, 0, 0, -cost, sz2+1));
     }
+
+    void addEdge(vector<Edge_MCF> G1[], int from,int to,int cap,int cost){
+        G1[from].push_back(Edge_MCF( to, cap, 0, cost, G[to].size()));
+        G1[to].push_back(Edge_MCF( from, 0, 0, -cost, G[from].size() - 1 ));
+    }
+
     //超级源点，超级汇点添加边
     void addEdge2(int from,int to,int cap,int cost){
         G[from].push_back(Edge_MCF( to, cap, 0, cost, G[to].size()));
@@ -117,7 +124,7 @@ public:
          int pathCnt = 0;       //路径数目
          int f = f_all;         //流量需求
          //int flowNeed = f;
-         int res = 0;           //返回值：存在路径解时返回最小费用，否则返回-1
+         res = 0;           //返回值：存在路径解时返回最小费用，否则返回-1
          for(int i=0;i<m;++i){
              minCostPath[i].clear();
          }
@@ -284,7 +291,7 @@ public:
          //最小费用流
          //初始化参数
          int f = f_all;         //流量需求
-         int res = 0;           //返回值：存在路径解时返回最小费用，否则返回-1
+         res = 0;           //返回值：存在路径解时返回最小费用，否则返回-1
 
          while (f>0)//未满足流量需求时继续寻找
          {
@@ -373,6 +380,91 @@ public:
 
          return res;
     }
+
+
+
+    int aug(vector<Edge_MCF> G1[], int u, int f){
+    	if(u == superConsumerNetNode){//遇到了汇点，计算代价，返回流量
+    		res += dist[superServer]*f;
+    		return f;
+    	}
+    	inq[u] = true;
+    	int temp = f;
+        int sz = G1[u].size();
+        for (int i = 0; i<sz; ++i)
+        {
+            Edge_MCF &e = G1[u][i];
+            if(e.cap && (dist[e.to]+e.cost==dist[u]) && (!inq[e.to]))
+            {
+                int delta = aug(G1, e.to, temp<e.cap?temp:e.cap);
+                e.cap -= delta;
+                G1[e.to][e.rev].cap += delta;
+                temp -= delta;
+                if(!temp)
+                	return f;
+            }
+        }
+        return f - temp;
+    }
+
+    bool modlabel(vector<Edge_MCF> G1[]){
+        int delta = INF;
+
+    	for(int u=0;u<nodeNum+2;++u){
+           if(inq[u]){
+        	   int sz = G1[u].size();
+        	   for(int i=0;i<sz;++i){
+        		   Edge_MCF& e = G1[u][i];
+        		   if(e.cap && (!inq[e.to]))
+        			   delta = min(delta, dist[e.to] + e.cost -dist[u]);
+        	   }
+           }
+        }
+
+    	if(delta == INF)
+    		return false;
+
+    	for(int u=0;u<nodeNum+2;++u){
+           if(inq[u]){
+        	   dist[u] += delta;
+           }
+        }
+
+    	return true;
+    }
+
+    //多源多汇最小费用流算法，用于求fit，即不需要求path
+    int multiMinCostFlow3(vector<int> &servers){
+         int serversNum = servers.size();
+
+         //创建残量网络副本
+         vector<Edge_MCF> G1[nodeNum+2];
+         copy(this->G,this->G+nodeNum+2,G1);
+
+
+         //加入超级源与超级汇
+         for(int i=0;i<serversNum;++i){
+             //超级源与每个服务器建立边：费用0，容量无穷
+             addEdge(G1,superServer,servers[i],INF,0);
+         }
+
+         //初始化参数
+         res = 0;
+         cost = 0;
+
+         do{
+        	 do{
+                 for(int i=0;i<nodeNum+2;++i){
+                    inq[i] = false;
+                 }
+        	 }while(aug(G1,superServer,INF));
+         }while(modlabel(G1));
+
+         return res;
+    }
+
+
+
 };
 
 #endif
