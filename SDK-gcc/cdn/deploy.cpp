@@ -117,14 +117,14 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
                 localIni = localOpt;
                 localOpt.gene[netNum] = false;
                 decode(localOpt, nodeNum, servers);//获取服务器部署
-                fit1 = mincostflow.multiMinCostFlow2(servers);
+                fit1 = mincostflow.multiMinCostFlow3(servers);
                 fit1 += serverCost*servers.size();
                 localIni1 = localOpt;
 
                 localOpt = localIni;
                 localOpt.gene[second] = false;
                 decode(localOpt, nodeNum, servers);//获取服务器部署
-                fit2 = mincostflow.multiMinCostFlow2(servers);
+                fit2 = mincostflow.multiMinCostFlow3(servers);
                 fit2 += serverCost*servers.size();
                 localIni2 = localOpt;
 
@@ -178,7 +178,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     	localOpt.gene[location] = false;
 
     	decode(localOpt, nodeNum, servers);//获取服务器部署
-        int fit = mincostflow.multiMinCostFlow2(servers);
+        int fit = mincostflow.multiMinCostFlow3(servers);
         fit += serverCost*servers.size();
         if(fit < minCost){//代价降低保留更改
             localIni = localOpt;
@@ -220,7 +220,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     	localOpt.gene[location] = false;
 
     	decode(localOpt, nodeNum, servers);//获取服务器部署
-        int fit = mincostflow.multiMinCostFlow2(servers);
+        int fit = mincostflow.multiMinCostFlow3(servers);
         fit += serverCost*servers.size();
         if(fit < minCost){//代价降低保留更改
             localIni = localOpt;
@@ -270,7 +270,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     		int netNode = graph.G[location][j].to;
     		localOpt.gene[netNode] = true;
     		decode(localOpt, nodeNum, servers);//获取服务器部署
-    		int fit = mincostflow.multiMinCostFlow2(servers);
+    		int fit = mincostflow.multiMinCostFlow3(servers);
     		fit += serverCost*servers.size();
     		if(fit < minCost){//代价降低保留更改
     			changeflag = true;

@@ -28,28 +28,28 @@ The CXX compiler identification is GNU, found in "/home/godcedric/GitLocal/Huawe
 Determining if the C compiler works passed with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_2f4ee/fast"
-/usr/bin/make -f CMakeFiles/cmTC_2f4ee.dir/build.make CMakeFiles/cmTC_2f4ee.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_4d98d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4d98d.dir/build.make CMakeFiles/cmTC_4d98d.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_2f4ee.dir/testCCompiler.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_2f4ee.dir/testCCompiler.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_2f4ee
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2f4ee.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_2f4ee.dir/testCCompiler.c.o  -o cmTC_2f4ee -rdynamic 
+Building C object CMakeFiles/cmTC_4d98d.dir/testCCompiler.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_4d98d.dir/testCCompiler.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_4d98d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4d98d.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_4d98d.dir/testCCompiler.c.o  -o cmTC_4d98d -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_c00d7/fast"
-/usr/bin/make -f CMakeFiles/cmTC_c00d7.dir/build.make CMakeFiles/cmTC_c00d7.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_1f6a7/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1f6a7.dir/build.make CMakeFiles/cmTC_1f6a7.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_c00d7
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c00d7.dir/link.txt --verbose=1
-/usr/bin/cc      -v CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o  -o cmTC_c00d7 -rdynamic  
+Building C object CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_1f6a7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1f6a7.dir/link.txt --verbose=1
+/usr/bin/cc      -v CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o  -o cmTC_1f6a7 -rdynamic  
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
@@ -59,8 +59,8 @@ Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_c00d7' '-rdynamic' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccZohpCv.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_c00d7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_1f6a7' '-rdynamic' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccfd802a.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_1f6a7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
@@ -68,14 +68,14 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_c00d7/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_c00d7.dir/build.make CMakeFiles/cmTC_c00d7.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_1f6a7/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_1f6a7.dir/build.make CMakeFiles/cmTC_1f6a7.dir/build]
   ignore line: [make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc     -o CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_c00d7]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c00d7.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc      -v CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o  -o cmTC_c00d7 -rdynamic  ]
+  ignore line: [Building C object CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc     -o CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_1f6a7]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1f6a7.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc      -v CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o  -o cmTC_1f6a7 -rdynamic  ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper]
@@ -85,13 +85,13 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_c00d7' '-rdynamic' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccZohpCv.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_c00d7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_1f6a7' '-rdynamic' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccfd802a.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_1f6a7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccZohpCv.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccfd802a.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -109,7 +109,7 @@ Parsed C implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_c00d7] ==> ignore
+    arg [cmTC_1f6a7] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o] ==> ignore
@@ -121,7 +121,7 @@ Parsed C implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..]
-    arg [CMakeFiles/cmTC_c00d7.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_1f6a7.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -155,14 +155,14 @@ Parsed C implicit link information from above output:
 Detecting C [-std=c11] compiler features compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_84d06/fast"
-/usr/bin/make -f CMakeFiles/cmTC_84d06.dir/build.make CMakeFiles/cmTC_84d06.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_e7cbb/fast"
+/usr/bin/make -f CMakeFiles/cmTC_e7cbb.dir/build.make CMakeFiles/cmTC_e7cbb.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_84d06.dir/feature_tests.c.o
-/usr/bin/cc    -std=c11 -o CMakeFiles/cmTC_84d06.dir/feature_tests.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_84d06
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_84d06.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_84d06.dir/feature_tests.c.o  -o cmTC_84d06 -rdynamic 
+Building C object CMakeFiles/cmTC_e7cbb.dir/feature_tests.c.o
+/usr/bin/cc    -std=c11 -o CMakeFiles/cmTC_e7cbb.dir/feature_tests.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_e7cbb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e7cbb.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_e7cbb.dir/feature_tests.c.o  -o cmTC_e7cbb -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
@@ -175,14 +175,14 @@ make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-
 Detecting C [-std=c99] compiler features compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_27428/fast"
-/usr/bin/make -f CMakeFiles/cmTC_27428.dir/build.make CMakeFiles/cmTC_27428.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_a21cb/fast"
+/usr/bin/make -f CMakeFiles/cmTC_a21cb.dir/build.make CMakeFiles/cmTC_a21cb.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_27428.dir/feature_tests.c.o
-/usr/bin/cc    -std=c99 -o CMakeFiles/cmTC_27428.dir/feature_tests.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_27428
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_27428.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_27428.dir/feature_tests.c.o  -o cmTC_27428 -rdynamic 
+Building C object CMakeFiles/cmTC_a21cb.dir/feature_tests.c.o
+/usr/bin/cc    -std=c99 -o CMakeFiles/cmTC_a21cb.dir/feature_tests.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_a21cb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a21cb.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_a21cb.dir/feature_tests.c.o  -o cmTC_a21cb -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
@@ -195,14 +195,14 @@ make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-
 Detecting C [-std=c90] compiler features compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_26c64/fast"
-/usr/bin/make -f CMakeFiles/cmTC_26c64.dir/build.make CMakeFiles/cmTC_26c64.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_1ff00/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1ff00.dir/build.make CMakeFiles/cmTC_1ff00.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_26c64.dir/feature_tests.c.o
-/usr/bin/cc    -std=c90 -o CMakeFiles/cmTC_26c64.dir/feature_tests.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_26c64
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_26c64.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_26c64.dir/feature_tests.c.o  -o cmTC_26c64 -rdynamic 
+Building C object CMakeFiles/cmTC_1ff00.dir/feature_tests.c.o
+/usr/bin/cc    -std=c90 -o CMakeFiles/cmTC_1ff00.dir/feature_tests.c.o   -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_1ff00
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1ff00.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_1ff00.dir/feature_tests.c.o  -o cmTC_1ff00 -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
@@ -213,28 +213,28 @@ make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-
 Determining if the CXX compiler works passed with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_81b67/fast"
-/usr/bin/make -f CMakeFiles/cmTC_81b67.dir/build.make CMakeFiles/cmTC_81b67.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_067d8/fast"
+/usr/bin/make -f CMakeFiles/cmTC_067d8.dir/build.make CMakeFiles/cmTC_067d8.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_81b67.dir/testCXXCompiler.cxx.o
-/usr/bin/c++      -o CMakeFiles/cmTC_81b67.dir/testCXXCompiler.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_81b67
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_81b67.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_81b67.dir/testCXXCompiler.cxx.o  -o cmTC_81b67 -rdynamic 
+Building CXX object CMakeFiles/cmTC_067d8.dir/testCXXCompiler.cxx.o
+/usr/bin/c++      -o CMakeFiles/cmTC_067d8.dir/testCXXCompiler.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_067d8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_067d8.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_067d8.dir/testCXXCompiler.cxx.o  -o cmTC_067d8 -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_36765/fast"
-/usr/bin/make -f CMakeFiles/cmTC_36765.dir/build.make CMakeFiles/cmTC_36765.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_869af/fast"
+/usr/bin/make -f CMakeFiles/cmTC_869af.dir/build.make CMakeFiles/cmTC_869af.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++      -o CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp
-Linking CXX executable cmTC_36765
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_36765.dir/link.txt --verbose=1
-/usr/bin/c++       -v CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_36765 -rdynamic  
+Building CXX object CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++      -o CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_869af
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_869af.dir/link.txt --verbose=1
+/usr/bin/c++       -v CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_869af -rdynamic  
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
@@ -244,8 +244,8 @@ Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_36765' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccuTWvdW.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_36765 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_869af' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccUeDw4z.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_869af /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
@@ -253,14 +253,14 @@ Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_36765/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_36765.dir/build.make CMakeFiles/cmTC_36765.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_869af/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_869af.dir/build.make CMakeFiles/cmTC_869af.dir/build]
   ignore line: [make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++      -o CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp]
-  ignore line: [Linking CXX executable cmTC_36765]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_36765.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++       -v CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_36765 -rdynamic  ]
+  ignore line: [Building CXX object CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++      -o CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_869af]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_869af.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++       -v CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_869af -rdynamic  ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper]
@@ -270,13 +270,13 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_36765' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccuTWvdW.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_36765 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_869af' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccUeDw4z.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_869af /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccuTWvdW.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccUeDw4z.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -294,7 +294,7 @@ Parsed CXX implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_36765] ==> ignore
+    arg [cmTC_869af] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o] ==> ignore
@@ -306,7 +306,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..]
-    arg [CMakeFiles/cmTC_36765.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_869af.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -338,14 +338,14 @@ Parsed CXX implicit link information from above output:
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_4da34/fast"
-/usr/bin/make -f CMakeFiles/cmTC_4da34.dir/build.make CMakeFiles/cmTC_4da34.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_ae616/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ae616.dir/build.make CMakeFiles/cmTC_ae616.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_4da34.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++14 -o CMakeFiles/cmTC_4da34.dir/feature_tests.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_4da34
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4da34.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_4da34.dir/feature_tests.cxx.o  -o cmTC_4da34 -rdynamic 
+Building CXX object CMakeFiles/cmTC_ae616.dir/feature_tests.cxx.o
+/usr/bin/c++     -std=c++14 -o CMakeFiles/cmTC_ae616.dir/feature_tests.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_ae616
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ae616.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_ae616.dir/feature_tests.cxx.o  -o cmTC_ae616 -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
@@ -411,14 +411,14 @@ make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_4cd56/fast"
-/usr/bin/make -f CMakeFiles/cmTC_4cd56.dir/build.make CMakeFiles/cmTC_4cd56.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_be0bc/fast"
+/usr/bin/make -f CMakeFiles/cmTC_be0bc.dir/build.make CMakeFiles/cmTC_be0bc.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_4cd56.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++11 -o CMakeFiles/cmTC_4cd56.dir/feature_tests.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_4cd56
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4cd56.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_4cd56.dir/feature_tests.cxx.o  -o cmTC_4cd56 -rdynamic 
+Building CXX object CMakeFiles/cmTC_be0bc.dir/feature_tests.cxx.o
+/usr/bin/c++     -std=c++11 -o CMakeFiles/cmTC_be0bc.dir/feature_tests.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_be0bc
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_be0bc.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_be0bc.dir/feature_tests.cxx.o  -o cmTC_be0bc -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 
@@ -484,14 +484,14 @@ make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
 Change Dir: /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_9b00a/fast"
-/usr/bin/make -f CMakeFiles/cmTC_9b00a.dir/build.make CMakeFiles/cmTC_9b00a.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_c75d0/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c75d0.dir/build.make CMakeFiles/cmTC_c75d0.dir/build
 make[1]: Entering directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_9b00a.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++98 -o CMakeFiles/cmTC_9b00a.dir/feature_tests.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_9b00a
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9b00a.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_9b00a.dir/feature_tests.cxx.o  -o cmTC_9b00a -rdynamic 
+Building CXX object CMakeFiles/cmTC_c75d0.dir/feature_tests.cxx.o
+/usr/bin/c++     -std=c++98 -o CMakeFiles/cmTC_c75d0.dir/feature_tests.cxx.o -c /home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_c75d0
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c75d0.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_c75d0.dir/feature_tests.cxx.o  -o cmTC_c75d0 -rdynamic 
 make[1]: Leaving directory '/home/godcedric/GitLocal/Huawei_Code_Craft_2017/SDK-gcc/build/CMakeFiles/CMakeTmp'
 
 

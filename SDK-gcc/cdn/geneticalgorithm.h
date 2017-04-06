@@ -140,7 +140,7 @@ void fitness(vector<Chorm>& population, MCF& mincostflow, vector<int>& servers,i
     //double timelimit;                   //程序计时
     for(int i=nProtect;i<population.size();++i){
         decode(population[i], nodeNum, servers);//获取服务器部署
-        int fit = mincostflow.multiMinCostFlow2(servers);
+        int fit = mincostflow.multiMinCostFlow3(servers);
         //cntMCF++;
         if(gettime() > ENDTIME){
             breakflag = true;

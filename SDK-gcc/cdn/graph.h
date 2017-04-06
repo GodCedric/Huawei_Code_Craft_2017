@@ -18,7 +18,7 @@ using namespace  std;
 #define INFMAX 1000000      //代价上限
 #define MAXPATH 50000		//网络路径上限
 #define MAXPATHNODE 1000	//单条路径节点数上限
-#define ENDTIME 89
+#define ENDTIME 87
 
 //边
 struct Edge{
