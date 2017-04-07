@@ -28,12 +28,6 @@ struct Edge_MCF
     Edge_MCF(int t, int c, int f, int cc, int r):to(t), cap(c), flow(f), cost(cc), rev(r){}
 };
 
-struct EDGE
-{
-    int cost, cap, v;
-    int next, re;
-}edge[20000];
-
 //最小费用流类
 class MCF{
 private:
@@ -61,11 +55,7 @@ private:
     bool hash[MAXNODE];
     int Count = 0;
     int N,S,T;
-
-    //基于矩阵的实现方法2
-    int head[1000],e;
-    int vis[1000];
-    int ans, ccost, src, des, n;
+    int wholeflow;
 
 
 public:
@@ -100,6 +90,10 @@ public:
             addEdge2(consumerNetNodes[i],superConsumerNetNode,graph.consumers[i].flowNeed,0);
         }
 
+        S = nodeNum;//超级源是倒数第二个
+        T = nodeNum+1;//超级汇是最后一个
+        N = T + 1;//节点个数
+
     }
 
     //给残存网络中添加边（上下行链路及其反向边）
@@ -130,30 +124,6 @@ public:
     void AddEdge3(int a,int b,int flow, int v){
         Count++; next[Count] = begin[a]; begin[a] = Count; eend[Count] = b; c[Count] = flow; cost[Count] = v;
         Count++; next[Count] = begin[b]; begin[b] = Count; eend[Count] = a; c[Count] = 0; cost[Count] = -v;
-    }
-
-    void init()
-    {
-        memset(head, -1, sizeof(head));
-        e = 0;
-        ans = 0;
-        ccost = 0;
-    }
-
-    void add(int u, int v, int cap, int cost)
-    {
-        edge[e].v = v;
-        edge[e].cap = cap;
-        edge[e].cost = cost;
-        edge[e].re = e + 1;
-        edge[e].next = head[u];
-        head[u] = e++;
-        edge[e].v = u;
-        edge[e].cap = 0;
-        edge[e].cost = -cost;
-        edge[e].re = e - 1;
-        edge[e].next = head[v];
-        head[v] = e++;
     }
 
 
@@ -220,8 +190,57 @@ public:
              minCostPath[i].clear();
          }
 
-         while (spfa())//未满足流量需求时继续寻找
+         while (f>0)//未满足流量需求时继续寻找
          {
+
+             //spfa算法求解最短路径
+             for(int i=0;i<nodeNum+2;++i){
+                dist[i] = INF;
+             }
+             dist[superServer] = 0;
+             myq.enqueue(superServer);
+             inq[superServer] = true;
+             while (!myq.is_empty())
+             {
+                 int v = myq.dequeue();
+                 inq[v] = false;
+                 int sz = G[v].size();
+                 for (int i = 0; i<sz; ++i)
+                 {
+                     Edge_MCF &e = G[v][i];
+                     if (e.cap>e.flow && dist[e.to]>dist[v]+e.cost)//松弛操作
+                     {
+                         dist[e.to] = dist[v] + e.cost;
+                         prevv[e.to] = v;//更新父结点
+                         preve[e.to] = i;//更新父边编号
+                         if(!inq[e.to]){
+                            myq.enqueue(e.to);
+                            inq[e.to] = true;
+                         }
+
+                     }
+                 }
+             }
+
+             //判断是否存在最短路径，若否，返回最大值
+             if (dist[superConsumerNetNode] == INF){
+
+                 //直接在原图上操作
+                 G[superServer].clear();//先把超级源清空
+                 //把新添加的servers的那些边删掉
+                 for(int i=0;i<serversNum;++i){
+                     G[servers[i]].pop_back();
+                 }
+                 for(int i=0;i<nodeNum+2;++i){
+                     int nnn = G[i].size();
+                     for(int j=0;j<nnn;++j){
+                         G[i][j].flow = 0;  //把流量复原
+                     }
+                 }
+
+                 return INFMAX;
+             }
+
              //求取最短路径最小流量增加量
              int d = INF;
              for (int x = superConsumerNetNode; x != superServer; x = prevv[x])
@@ -316,7 +335,7 @@ public:
 
     //多源多汇最小费用流算法，用于求fit，即不需要求path
     int multiMinCostFlow2(vector<int> &servers){
-         int serversNum = servers.size();
+        int serversNum = servers.size();
 
          //创建残量网络副本
          //vector<Edge_MCF> G1[nodeNum+2];
@@ -334,8 +353,55 @@ public:
          int f = f_all;         //流量需求
          res = 0;           //返回值：存在路径解时返回最小费用，否则返回-1
 
-         while (spfa())
+         while (f>0)//未满足流量需求时继续寻找
          {
+             //spfa算法求解最短路径
+             for(int i=0;i<nodeNum+2;++i){
+                dist[i] = INF;
+             }
+             dist[superServer] = 0;
+             myq.enqueue(superServer);
+             inq[superServer] = true;
+             while (!myq.is_empty())
+             {
+            	 int v = myq.dequeue();
+
+                 inq[v] = false;
+                 int sz = G[v].size();
+                 for (int i = 0; i<sz; ++i)
+                 {
+                     Edge_MCF &e = G[v][i];
+                     if (e.cap>e.flow && dist[e.to]>dist[v]+e.cost)//松弛操作
+                     {
+                         dist[e.to] = dist[v] + e.cost;
+                         prevv[e.to] = v;//更新父结点
+                         preve[e.to] = i;//更新父边编号
+                         if(!inq[e.to]){
+                            myq.enqueue(e.to);
+                            inq[e.to] = true;
+                         }
+                     }
+                 }
+             }
+
+             //判断是否存在最短路径，若否，返回最大值
+             if (dist[superConsumerNetNode] == INF){
+
+                 //直接在原图上操作
+                 G[superServer].clear();//先把超级源清空
+                 //把新添加的servers的那些边删掉
+                 for(int i=0;i<serversNum;++i){
+                     G[servers[i]].pop_back();
+                 }
+                 for(int i=0;i<nodeNum+2;++i){
+                     int nnn = G[i].size();
+                     for(int j=0;j<nnn;++j){
+                         G[i][j].flow = 0;  //把流量复原
+                     }
+                 }
+
+                 return INFMAX;
+             }
 
              //求取最短路径最小流量增加量
              int d = INF;
@@ -379,11 +445,11 @@ public:
 
     int aug(int u, int f){
     	if(u == T){//遇到了汇点，计算代价，返回流量
-    		return f;
+            return f;
     	}
     	hash[u] = true;
     	for(int now=cur[u];now;now=next[now]){
-    		if(c[now] && (!hash[eend[now]]) && d[u] == d[eend[now]]+cost[now]){
+    		if(c[now] && (!hash[eend[now]]) && (d[u] == d[eend[now]]+cost[now])){
     			if(int tmp = aug(eend[now],MIN(f,c[now]))){
     				c[now] -= tmp;
     				c[OPPOSITE(now)] += tmp;
@@ -398,10 +464,10 @@ public:
     bool modlabel(){
 
     	int tmp = INFINIT;
-        for (int i = 0; i<N; ++i){
+        for (int i = 0; i<N; i++){
         	if (hash[i]){
         		for (int now = begin[i]; now; now = next[now]){
-        			if (c[now]&&!hash[eend[now]]){
+        			if (c[now]&&(!hash[eend[now]])){
         				tmp = MIN(tmp,d[eend[now]]+cost[now]-d[i]);
         			}
         		}
@@ -424,22 +490,20 @@ public:
     int multiMinCostFlow3(vector<int> &servers){
         //初始化
         Count = 0;
-        for(int i=0;i<MAXNODE;++i){
+        for(int i=0;i<nodeNum+2;++i){
         	begin[i] = 0;
         	d[i] = 0;
         	cur[i] = 0;
-        	hash[i] = 0;
+        	//hash[i] = 0;
         }
-        for(int i=0;i<MAXEDGE;++i){
+        for(int i=0;i<nodeNum+2;++i){
         	eend[i] = 0;
         	next[i] = 0;
         	c[i] = 0;
         	cost[i] = 0;
         }
 
-        S = nodeNum;//超级源是倒数第二个
-        T = nodeNum+1;//超级汇是最后一个
-        N = T+1;//节点个数
+        wholeflow = 0;
 
         //超级源加到1号位置
         int serversNum = servers.size();
@@ -475,93 +539,17 @@ public:
         	}
         	while(tmp = aug(S,INFINIT)){
         		res += tmp*d[S];
+        		wholeflow += tmp;
         		memset(hash,0,sizeof(hash));
         	}
         	if(modlabel())
         		break;
         }
 
-        return res;
-    }
-
-    int aug2(int u, int f)
-    {
-        if(u == des)
-        {
-            ans += ccost * f;
-            return f;
-        }
-        vis[u] = 1;
-        int tmp = f;
-        for(int i = head[u]; i != -1; i = edge[i].next)
-            if(edge[i].cap && !edge[i].cost && !vis[edge[i].v])
-            {
-                int delta = aug(edge[i].v, tmp < edge[i].cap ? tmp : edge[i].cap);
-                edge[i].cap -= delta;
-                edge[edge[i].re].cap += delta;
-                tmp -= delta;
-                if(!tmp) return f;
-            }
-        return f - tmp;
-    }
-
-    bool modlabel2()
-    {
-        int delta = INF;
-        for(int u = 0; u < n; u++)
-            if(vis[u])
-                for(int i = head[u]; i != -1; i = edge[i].next)
-                    if(edge[i].cap && !vis[edge[i].v] && edge[i].cost < delta) delta = edge[i].cost;
-        if(delta == INF) return false;
-        for(int u = 0; u < n; u++)
-            if(vis[u])
-                for(int i = head[u]; i != -1; i = edge[i].next)
-                    edge[i].cost -= delta, edge[edge[i].re].cost += delta;
-        ccost += delta;
-        return true;
-    }
-
-    int multiMinCostFlow4(vector<int> &servers){
-        //初始化
-        init();
-
-        src = nodeNum;//超级源是倒数第二个
-        des = nodeNum+1;//超级汇是最后一个
-        n = nodeNum+2;//节点个数
-
-        //超级源加到1号位置
-        int serversNum = servers.size();
-        for(int i=0;i<serversNum;++i){
-            //超级源与每个服务器建立边：费用0，容量无穷
-        	add(src,servers[i],INF,0);
-        }
-
-    	//加上网络节点
-        for (int i=0;i<nodeNum;++i)
-        {
-            for(int j=0;j<graph.G[i].size();++j){
-            	//上行
-            	add(graph.G[i][j].from,graph.G[i][j].to,
-                            graph.G[i][j].cap,graph.G[i][j].cost);
-            	//下行
-            	add(graph.G[i][j].to,graph.G[i][j].from,
-                            graph.G[i][j].cap,graph.G[i][j].cost);
-            }
-        }
-
-        //加上超级汇
-        for(int i=0;i<consumerNum;++i){
-            //超级汇与每个消费结点所连的网络结点建立边：容量为流量需求，费用为0
-        	add(consumerNetNodes[i],des,graph.consumers[i].flowNeed,0);
-        }
-
-        do{
-        	do{
-        		memset(vis, 0, sizeof(vis));
-        	}while(aug2(src, INF));
-        }while(modlabel2());
-
-        return ans;
+        if(wholeflow != f_all)
+            return INFMAX;
+        else
+            return res;
     }
 
 };

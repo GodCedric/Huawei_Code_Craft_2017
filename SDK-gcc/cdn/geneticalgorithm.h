@@ -85,7 +85,7 @@ void generateChorm2(Chorm& chorm, Chorm chorm1, int geneBit){
 
     //以当前最优解执行变异操作，产生新解
     chorm = chorm1;
-    int n = rand() % 5; //变异个数
+    int n = rand() % 5 + 1; //变异个数
     while(n--){
         int index = rand() % geneBit;
         chorm.gene[index] = ! chorm.gene[index];
@@ -98,7 +98,7 @@ void generateChorm3(Chorm& chorm, Chorm chorm1, int geneBit, vector<double>& pro
     //以当前最优解执行变异操作，产生新解
     chorm = chorm1;
     //int n = rand() % 10; //变异个数
-    int n = 10;
+    int n = 5;
 
     set<int> serversIndex;
 
@@ -235,7 +235,13 @@ void crossover(double crossoverRate,
         }
         //剩下的无解的染色体仍然按照随机生成，并且至少保证留出来20个染色体为随机生成，补充种群多样性
         for(int i=((cntValidChorm<(chormNum-x))?cntValidChorm:(chormNum-x));i<chormNum;++i){
-            generateChorm2(new_population[i], new_population[0], geneBit);
+            //if(i%2 == 0){
+                generateChorm2(new_population[i], new_population[0], geneBit);
+            //}else{
+                //generateChorm3(new_population[i], new_population[0], geneBit, probability);
+            //}
+
+
             //generateChorm(new_population[i], probability, chormNum, geneBit, maxServers);
             //randomChorm(new_population[i], chormNum, geneBit, maxServers);
         }
