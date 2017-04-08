@@ -85,7 +85,8 @@ void generateChorm2(Chorm& chorm, Chorm chorm1, int geneBit){
 
     //以当前最优解执行变异操作，产生新解
     chorm = chorm1;
-    int n = rand() % 5 + 1; //变异个数
+    int n = rand() % 2 + 1; //变异个数
+    //int n = 1;
     while(n--){
         int index = rand() % geneBit;
         chorm.gene[index] = ! chorm.gene[index];

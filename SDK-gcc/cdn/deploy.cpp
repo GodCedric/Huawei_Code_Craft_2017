@@ -102,7 +102,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int nn;
 
     //第一次缩减代价，第一层服务器有相连的可能降低代价
-    if(caseflag != 0){
+    if(caseflag >= 0){
         for(int i=0;i<consumerNum;++i){
             int netNum = graph.consumers[i].netNode;
             if(firstLevel.find(netNum) == firstLevel.end())
@@ -171,7 +171,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     }
 
     //第三次缩减代价，服务器规模缩减，以路径代价代替服务器代价
-    if(caseflag != 0){
+    if(caseflag >= 0){
         nn = servers.size();
         for(int i=0;i<nn;++i){
             //时间控制
@@ -256,7 +256,7 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     }
 
     //第二次缩减代价，节点向内逐步纵深
-    if(caseflag != 0){
+    if(caseflag >= 0){
         nn = servers.size();
         for(int i=0;i<nn;++i){
             int location = servers[i];//取出服务器位置
@@ -310,15 +310,14 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
     }
 
-    return;
-
 
     cout<<"**********************"<<endl;
 
 
     //剩余染色体按随机变异生成
     for(int i=3;i<chormNum;++i){
-            generateChorm3(population[i], localOpt, geneBit, probability);
+        //generateChorm3(population[i], localOpt, geneBit, probability);
+        generateChorm2(population[i], localOpt, geneBit);
     }
 
 
@@ -326,6 +325,8 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
     int cntChanged = 0;         //最小代价改变次数
     int nProtect = 0;           //染色体保护数目
     int cntValidChorm = 0;
+    int tempMinCost = minCost;
+    int cntMinCost = 0;
     while(generation--){
 
         //以最小费用流算法为适度函数，求各染色体适应度
@@ -354,17 +355,18 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num,char * filename)
 
         //收敛后退出
         //cout<<cntMinCost<<endl;
-        /*if(cntValidChorm>50 && tempMinCost == minCost){
-            cntMinCost++;
-        }else{
-            cntMinCost = 0;
-        }
-        if((cntChanged>15||cntValidChorm>50) && cntMinCost>25){//如果50次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
+        if(caseflag == 0){
+            if(tempMinCost == minCost){
+                cntMinCost++;
+            }else{
+                cntMinCost = 0;
+            }
+            if(cntMinCost>60){//如果50次迭代最小代价仍然没有改变，则认为收敛，跳出迭代
             break;
+            }
+            tempMinCost = minCost;
         }
-        if(cntMinCost > 600)
-            break;
-        tempMinCost = minCost;*/
+
         //cout<<minCost<<endl;
         //break;
 
